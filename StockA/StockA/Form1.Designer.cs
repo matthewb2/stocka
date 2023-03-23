@@ -117,9 +117,10 @@ namespace StockA
             this.splitContainer1.Panel2.Controls.Add(this.logtxtBox);
             this.splitContainer1.Panel2.Margin = new System.Windows.Forms.Padding(3);
             this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(5);
-            this.splitContainer1.Size = new System.Drawing.Size(1053, 503);
+            this.splitContainer1.Size = new System.Drawing.Size(1053, 515);
             this.splitContainer1.SplitterDistance = 310;
             this.splitContainer1.TabIndex = 1;
+            this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
             // 
             // splitContainer2
             // 
@@ -150,7 +151,7 @@ namespace StockA
             // 
             this.button4.Location = new System.Drawing.Point(118, 277);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(92, 28);
+            this.button4.Size = new System.Drawing.Size(92, 30);
             this.button4.TabIndex = 5;
             this.button4.Text = "프로그램 종료";
             this.button4.UseVisualStyleBackColor = true;
@@ -158,27 +159,28 @@ namespace StockA
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(118, 247);
+            this.button3.Location = new System.Drawing.Point(118, 241);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(92, 24);
+            this.button3.Size = new System.Drawing.Size(92, 30);
             this.button3.TabIndex = 4;
             this.button3.Text = "자동매매 중지";
             this.button3.UseVisualStyleBackColor = true;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(20, 247);
+            this.button2.Location = new System.Drawing.Point(17, 241);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(92, 24);
+            this.button2.Size = new System.Drawing.Size(92, 30);
             this.button2.TabIndex = 3;
             this.button2.Text = "자동매매 시작";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(17, 277);
+            this.button1.Location = new System.Drawing.Point(17, 280);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(92, 28);
+            this.button1.Size = new System.Drawing.Size(92, 30);
             this.button1.TabIndex = 2;
             this.button1.Text = "로그인";
             this.button1.UseVisualStyleBackColor = true;
@@ -191,9 +193,9 @@ namespace StockA
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.textBox5);
             this.groupBox2.Controls.Add(this.textBox6);
-            this.groupBox2.Location = new System.Drawing.Point(12, 135);
+            this.groupBox2.Location = new System.Drawing.Point(12, 127);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(221, 106);
+            this.groupBox2.Size = new System.Drawing.Size(221, 93);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "계좌 정보";
@@ -250,7 +252,7 @@ namespace StockA
             this.groupBox1.Controls.Add(this.textBox4);
             this.groupBox1.Location = new System.Drawing.Point(9, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(224, 117);
+            this.groupBox1.Size = new System.Drawing.Size(224, 109);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "로그인 정보";
@@ -321,7 +323,7 @@ namespace StockA
             this.splitContainer3.Panel2.Controls.Add(this.listView2);
             this.splitContainer3.Panel2.Padding = new System.Windows.Forms.Padding(5);
             this.splitContainer3.Size = new System.Drawing.Size(809, 310);
-            this.splitContainer3.SplitterDistance = 78;
+            this.splitContainer3.SplitterDistance = 88;
             this.splitContainer3.TabIndex = 0;
             // 
             // listView1
@@ -332,7 +334,7 @@ namespace StockA
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(5, 5);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(799, 68);
+            this.listView1.Size = new System.Drawing.Size(799, 78);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             // 
@@ -344,7 +346,7 @@ namespace StockA
             this.listView2.HideSelection = false;
             this.listView2.Location = new System.Drawing.Point(5, 5);
             this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(799, 218);
+            this.listView2.Size = new System.Drawing.Size(799, 208);
             this.listView2.TabIndex = 1;
             this.listView2.UseCompatibleStateImageBehavior = false;
             this.listView2.SelectedIndexChanged += new System.EventHandler(this.listView2_SelectedIndexChanged);
@@ -357,14 +359,14 @@ namespace StockA
             this.logtxtBox.Multiline = true;
             this.logtxtBox.Name = "logtxtBox";
             this.logtxtBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logtxtBox.Size = new System.Drawing.Size(1043, 179);
+            this.logtxtBox.Size = new System.Drawing.Size(1043, 191);
             this.logtxtBox.TabIndex = 0;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1053, 527);
+            this.ClientSize = new System.Drawing.Size(1053, 539);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
