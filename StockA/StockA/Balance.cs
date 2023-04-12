@@ -6,8 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XA_DATASETLib;
-using XA_SESSIONLib;
-
 
 namespace StockA
 {
@@ -28,15 +26,20 @@ namespace StockA
 
 
         public TextBox output;
-        public Balance(TextBox output, ListView balance_sheet, ListView stocks)
+        public Balance(TextBox output, ListView balance_sheet, ListView stocks, string accno, string accpw)
         {
             this.output = output;
             this.balance_sheet = balance_sheet;
             this.stocks = stocks;
+            //모의투자
+            this.account_number = accno;
+            this.account_pwd = accpw;
 
             var row1 = new ListViewItem(new[] { "", "", "", "", "", "","", "", "","" });
+            
             this.balance_sheet.Items.Add(row1);
             
+
             this.is_data_received = false;
 
             t0424 = new XAQueryClass();
@@ -48,10 +51,7 @@ namespace StockA
             CSPAQ12300.ReceiveData += CSPAQ12300OnReceiveData;
 
             this.keyVal = "";
-            // 모의투자
-            this.account_number = "";
-            this.account_pwd = "0000";
-
+            
 
         }
 
@@ -174,8 +174,9 @@ namespace StockA
                 //this.output.Text += String.Format("t0424 => {0} {1} {2} {3} {4} {5} {6} {7}", s1, s2, s3, s4, s5, p1, p2, p4) + Environment.NewLine;
 
                 var row2 = new ListViewItem(new[] { "", "", "", "", "", "", "", "","" });
+                row2.ToolTipText = "클릭하여 주문";
                 this.stocks.Items.Add(row2);
-
+                
                 this.stocks.Items[i].SubItems[0].Text = s1;
                 this.stocks.Items[i].SubItems[1].Text = s2;
                 this.stocks.Items[i].SubItems[2].Text = string.Format("{0:#,0}", Convert.ToInt32(s3));
@@ -232,8 +233,8 @@ namespace StockA
             /*
             이베스트 서버에 일회성 TR data 요청함.
             */
-            t0424.SetFieldData("t0424InBlock", "accno", 0, "");
-            t0424.SetFieldData("t0424InBlock", "passwd", 0, "0000");
+            t0424.SetFieldData("t0424InBlock", "accno", 0, this.account_number);
+            t0424.SetFieldData("t0424InBlock", "passwd", 0, this.account_pwd);
             t0424.SetFieldData("t0424InBlock", "prcgb", 0, "1");
             t0424.SetFieldData("t0424InBlock", "chegb", 0, "2");
             t0424.SetFieldData("t0424InBlock", "dangb", 0, "0");
@@ -244,8 +245,8 @@ namespace StockA
 
             CSPAQ12300.SetFieldData("CSPAQ12300InBlock1", "RecCnt", 0, "00001");
             //CSPAQ12300.SetFieldData("CSPAQ12300InBlock1", "MgmtBrnNo", 0, " ");
-            CSPAQ12300.SetFieldData("CSPAQ12300InBlock1", "AcntNo", 0, "");
-            CSPAQ12300.SetFieldData("CSPAQ12300InBlock1", "Pwd", 0, "0000");
+            CSPAQ12300.SetFieldData("CSPAQ12300InBlock1", "AcntNo", 0, this.account_number);
+            CSPAQ12300.SetFieldData("CSPAQ12300InBlock1", "Pwd", 0, this.account_pwd);
             CSPAQ12300.SetFieldData("CSPAQ12300InBlock1", "BalCreTp", 0, "0");
 
             //tr요청

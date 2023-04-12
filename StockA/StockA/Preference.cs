@@ -16,11 +16,13 @@ namespace StockA
     public partial class Preference : Form
     {
         List<Item> items;
-        public static string accNo;
+        //public static string id, accNo;
+        public string id;
 
         public Preference()
         {
             InitializeComponent();
+            this.id = Form1.id;
             //
             string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
 
@@ -62,7 +64,7 @@ namespace StockA
             {   
                 JObject sonSpec = new JObject(
                 new JProperty("millis", textBox4.Text),
-                new JProperty("stamp", "0000"),
+                new JProperty("stamp", textBox5.Text),
                 new JProperty("light", items[0].light),
                 new JProperty("vcc", "false")
                 );
@@ -94,7 +96,7 @@ namespace StockA
         {
             if (!Form1.logged)
                 MessageBox.Show("로그인이 필요합니다");
-            Strategy stg = new Strategy(comboBox1);
+            Strategy stg = new Strategy(comboBox1, this.id);
             stg.request();
                     
         }
@@ -102,6 +104,29 @@ namespace StockA
         private void checkBox9_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            MessageBox.Show("모의투자에서는 실시간 기능은 제공되지 않습니다");
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            comboBox1.Items.Clear();
+            comboBox1.Text = "";
+            comboBox2.Items.Clear();
+            comboBox2.Text = "";
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+
+            comboBox3.Items.Clear();
+            comboBox3.Text = "";
+            comboBox4.Items.Clear();
+            comboBox4.Text = "";
         }
     }
 }

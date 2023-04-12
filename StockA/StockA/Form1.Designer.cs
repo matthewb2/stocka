@@ -32,7 +32,11 @@ namespace StockA
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.시스템설정ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.도움말ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.주문ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.간단주문ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.주문내역확인ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.도움말ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.정보ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.button4 = new System.Windows.Forms.Button();
@@ -56,6 +60,8 @@ namespace StockA
             this.listView1 = new System.Windows.Forms.ListView();
             this.listView2 = new System.Windows.Forms.ListView();
             this.logtxtBox = new System.Windows.Forms.TextBox();
+            this.도움말ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.정보ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -77,6 +83,8 @@ namespace StockA
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.시스템설정ToolStripMenuItem,
+            this.주문ToolStripMenuItem,
+            this.도움말ToolStripMenuItem1,
             this.도움말ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -91,12 +99,44 @@ namespace StockA
             this.시스템설정ToolStripMenuItem.Text = "시스템설정";
             this.시스템설정ToolStripMenuItem.Click += new System.EventHandler(this.시스템설정ToolStripMenuItem_Click);
             // 
-            // 도움말ToolStripMenuItem
+            // 주문ToolStripMenuItem
             // 
-            this.도움말ToolStripMenuItem.Name = "도움말ToolStripMenuItem";
-            this.도움말ToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
-            this.도움말ToolStripMenuItem.Text = "도움말";
-            this.도움말ToolStripMenuItem.Click += new System.EventHandler(this.도움말ToolStripMenuItem_Click);
+            this.주문ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.간단주문ToolStripMenuItem,
+            this.주문내역확인ToolStripMenuItem});
+            this.주문ToolStripMenuItem.Name = "주문ToolStripMenuItem";
+            this.주문ToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.주문ToolStripMenuItem.Text = "주문";
+            this.주문ToolStripMenuItem.Click += new System.EventHandler(this.도움말ToolStripMenuItem_Click);
+            // 
+            // 간단주문ToolStripMenuItem
+            // 
+            this.간단주문ToolStripMenuItem.Name = "간단주문ToolStripMenuItem";
+            this.간단주문ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.간단주문ToolStripMenuItem.Text = "간단주문";
+            this.간단주문ToolStripMenuItem.Click += new System.EventHandler(this.간단주문ToolStripMenuItem_Click);
+            // 
+            // 주문내역확인ToolStripMenuItem
+            // 
+            this.주문내역확인ToolStripMenuItem.Name = "주문내역확인ToolStripMenuItem";
+            this.주문내역확인ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.주문내역확인ToolStripMenuItem.Text = "주문내역확인";
+            this.주문내역확인ToolStripMenuItem.Click += new System.EventHandler(this.주문내역확인ToolStripMenuItem_Click);
+            // 
+            // 도움말ToolStripMenuItem1
+            // 
+            this.도움말ToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.정보ToolStripMenuItem});
+            this.도움말ToolStripMenuItem1.Name = "도움말ToolStripMenuItem1";
+            this.도움말ToolStripMenuItem1.Size = new System.Drawing.Size(43, 20);
+            this.도움말ToolStripMenuItem1.Text = "잔고";
+            // 
+            // 정보ToolStripMenuItem
+            // 
+            this.정보ToolStripMenuItem.Name = "정보ToolStripMenuItem";
+            this.정보ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.정보ToolStripMenuItem.Text = "잔고내역확인";
+            this.정보ToolStripMenuItem.Click += new System.EventHandler(this.정보ToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -149,28 +189,29 @@ namespace StockA
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(118, 277);
+            this.button4.Location = new System.Drawing.Point(118, 241);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(92, 30);
+            this.button4.Size = new System.Drawing.Size(92, 27);
             this.button4.TabIndex = 5;
-            this.button4.Text = "프로그램 종료";
+            this.button4.Text = "로그아웃";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(118, 241);
+            this.button3.Location = new System.Drawing.Point(118, 274);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(92, 30);
+            this.button3.Size = new System.Drawing.Size(92, 27);
             this.button3.TabIndex = 4;
             this.button3.Text = "자동매매 중지";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(17, 241);
+            this.button2.Location = new System.Drawing.Point(20, 274);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(92, 30);
+            this.button2.Size = new System.Drawing.Size(92, 27);
             this.button2.TabIndex = 3;
             this.button2.Text = "자동매매 시작";
             this.button2.UseVisualStyleBackColor = true;
@@ -178,9 +219,9 @@ namespace StockA
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(17, 280);
+            this.button1.Location = new System.Drawing.Point(20, 241);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(92, 30);
+            this.button1.Size = new System.Drawing.Size(92, 27);
             this.button1.TabIndex = 2;
             this.button1.Text = "로그인";
             this.button1.UseVisualStyleBackColor = true;
@@ -195,7 +236,7 @@ namespace StockA
             this.groupBox2.Controls.Add(this.textBox6);
             this.groupBox2.Location = new System.Drawing.Point(12, 127);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(221, 93);
+            this.groupBox2.Size = new System.Drawing.Size(221, 108);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "계좌 정보";
@@ -362,6 +403,20 @@ namespace StockA
             this.logtxtBox.Size = new System.Drawing.Size(1043, 191);
             this.logtxtBox.TabIndex = 0;
             // 
+            // 도움말ToolStripMenuItem
+            // 
+            this.도움말ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.정보ToolStripMenuItem1});
+            this.도움말ToolStripMenuItem.Name = "도움말ToolStripMenuItem";
+            this.도움말ToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
+            this.도움말ToolStripMenuItem.Text = "도움말";
+            // 
+            // 정보ToolStripMenuItem1
+            // 
+            this.정보ToolStripMenuItem1.Name = "정보ToolStripMenuItem1";
+            this.정보ToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.정보ToolStripMenuItem1.Text = "정보";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -401,7 +456,7 @@ namespace StockA
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 시스템설정ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 도움말ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 주문ToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.TextBox logtxtBox;
@@ -425,6 +480,12 @@ namespace StockA
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.ListView listView2;
+        private System.Windows.Forms.ToolStripMenuItem 간단주문ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 주문내역확인ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 도움말ToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem 정보ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 도움말ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 정보ToolStripMenuItem1;
     }
 }
 

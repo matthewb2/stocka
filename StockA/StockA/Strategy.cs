@@ -15,17 +15,15 @@ namespace StockA
         private XAQueryClass t1866;
 
         public bool is_data_received;
-        public string keyVal;
-        public string account_number;
-        public string account_pwd;
-
+        public string id, keyVal;
+        
         //ListView balance_sheet;
         ComboBox cb_strategyA;
 
         //public TextBox output;
-        public Strategy(ComboBox cb)
+        public Strategy(ComboBox cb, string id)
         {
-
+            this.id = id;
             cb_strategyA = cb;
 
             this.is_data_received = false;
@@ -35,10 +33,7 @@ namespace StockA
             t1866.ReceiveData += OnReceiveData;
 
             this.keyVal = "";
-            // 모의투자
-            this.account_number = "";
-            this.account_pwd = "0000";
-
+            
         }
 
         private void OnReceiveData(string tr_code)
@@ -66,7 +61,7 @@ namespace StockA
                     cb_strategyA.Items.AddRange(ItemObject);
                 }
                 cb_strategyA.SelectedIndex = 0;
-                //MessageBox.Show("조건식 가져오기 완료");
+                
             }
         }
         public void end()
@@ -79,7 +74,7 @@ namespace StockA
             /*
             이베스트 서버에 일회성 TR data 요청함.
             */
-            t1866.SetFieldData("t1866InBlock", "user_id", 0, "");
+            t1866.SetFieldData("t1866InBlock", "user_id", 0, this.id);
             t1866.SetFieldData("t1866InBlock", "gb", 0, "0");
             t1866.SetFieldData("t1866InBlock", "group_name", 0, "0");
             t1866.SetFieldData("t1866InBlock", "cont", 0, "0");
@@ -87,7 +82,8 @@ namespace StockA
 
             //tr요청
             int result = t1866.Request(false);
-
+            if (result <0)
+                MessageBox.Show("error");
         }
     }
 
