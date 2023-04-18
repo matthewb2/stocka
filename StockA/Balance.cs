@@ -35,11 +35,7 @@ namespace StockA
             this.account_number = accno;
             this.account_pwd = accpw;
 
-            var row1 = new ListViewItem(new[] { "", "", "", "", "", "","", "", "","" });
             
-            this.balance_sheet.Items.Add(row1);
-            
-
             this.is_data_received = false;
 
             t0424 = new XAQueryClass();
@@ -69,6 +65,9 @@ namespace StockA
             /*
             이베스트 서버에서 ReceiveData 이벤트 받으면 실행되는 event handler
             */
+
+            
+
             this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
 
             int c1 = Convert.ToInt32(CSPAQ12300.GetFieldData("CSPAQ12300OutBlock2", "DpsastTotamt", 0));
@@ -112,6 +111,12 @@ namespace StockA
 
             this.output.Text += String.Format("{0} {1} {2} {3} {4}", r1, r2, r3, r4, r5) + Environment.NewLine;
 
+            //initialization
+            this.balance_sheet.Items.Clear();
+
+            var row1 = new ListViewItem(new[] { "", "", "", "", "", "", "", "", "", "" });
+
+            this.balance_sheet.Items.Add(row1);
 
             this.balance_sheet.Items[0].SubItems[0].Text = string.Format("{0:N0}", Convert.ToInt32(r1));
             this.balance_sheet.Items[0].SubItems[1].Text = string.Format("{0:N0}", Convert.ToInt32(r2));
@@ -155,6 +160,9 @@ namespace StockA
             //long s5;
             int p1, p2, p3;
             //
+            //this.stocks.Items.Clear();
+            
+
             for (int i = 0; i < nCount; i++)
             {
                 s1 = t0424.GetFieldData("t0424OutBlock1", "expcode", i); //종목번호

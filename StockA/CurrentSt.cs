@@ -29,11 +29,7 @@ namespace StockA
             t1101.ReceiveData += t1101OnReceiveData;
 
             this.keyVal = "";
-            // 모의투자
-            //this.account_number = "55501502101";
-            //this.account_pwd = "0000";
-
-
+            
         }
 
 

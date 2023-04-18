@@ -31,10 +31,9 @@ namespace StockA
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //OrderCur oc = new OrderCur();
             Order or = new Order(logtextBox, accno, accpw);
-            or.request("011500", "22050");
-
+            or.request("011500", "22050", "2");
+            this.Close();
 
         }
     }

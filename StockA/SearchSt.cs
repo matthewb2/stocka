@@ -105,7 +105,7 @@ namespace StockA
                     //order it
                     if (!isBucket)
                     {
-                        od.request(shcode, price);
+                        od.request(shcode, price, "2");
                         od.end();
                     }
                 }

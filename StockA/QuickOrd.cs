@@ -12,14 +12,45 @@ namespace StockA
 {
     public partial class QuickOrd : Form
     {
-        public QuickOrd()
+        private string accno, accpw;
+        private TextBox txtbox;
+        public QuickOrd(TextBox txtbox, string accno, string accpw)
         {
+            this.txtbox = txtbox;
+            this.accno = accno;
+            this.accpw = accpw;
+
             InitializeComponent();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.Close();
+            this.Hide();
+            this.Visible = false;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Order or = new Order(txtbox, accno, accpw);
+            //or.request("011500", "20050");
+            this.txtbox.Text += textBox4.Text + Environment.NewLine;
+            this.txtbox.Text += textBox1.Text.Replace(",", "") + Environment.NewLine;
+            if (textBox1.Text.Length >0)
+            {
+                string price = textBox1.Text.Replace(",", "");
+                if (Convert.ToInt32(price) < 0)
+                {
+                    MessageBox.Show("가격란에 유효한 값이 아닙니다");
+                }
+                string code = textBox4.Text;
+                or.request(code, price, "1");
+            }
+            
         }
     }
 }

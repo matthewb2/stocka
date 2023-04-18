@@ -59,12 +59,6 @@ namespace StockA
             this.account_number = accno;
             this.account_pwd = accpw;
 
-            var row1 = new ListViewItem(new[] { "", "", "", ""});
-            
-            listView1.Items.Add(row1);
-            //listView1.Items[0].SubItems[0].Text = "236200";
-            //listView1.Items[0].SubItems[1].Text = convertSN("236200");
-
         }
 
 
@@ -79,7 +73,15 @@ namespace StockA
             string ord_no, ord_code, ord_name, ord_side, org_qty, ord_price, done_price, done_qty;
             //int org_qty, ord_price, done_price, done_qty;
 
+            //
+            //listView1.DataSource = null;
+            listView1.Items.Clear();
+
             for (int i = 0; i < nCount; i++) {
+                var row1 = new ListViewItem(new[] { "", "", "", "", "", "" });
+                listView1.Items.Add(row1);
+
+
                 ord_no = t0425.GetFieldData("t0425OutBlock1", "ordno", i); //주문번호        
                 ord_code = t0425.GetFieldData("t0425OutBlock1", "expcode", i); //종목번호
                 ord_name = t0425.GetFieldData("t0425OutBlock1", "hname", i); //종목명
@@ -89,13 +91,14 @@ namespace StockA
                 done_price = t0425.GetFieldData("t0425OutBlock1", "cheprice", i); //주문가격
                 done_qty = t0425.GetFieldData("t0425OutBlock1", "cheqty", i); //체결수량
 
-                listView1.Items[0].SubItems[0].Text = string.Format(ord_no);
-                listView1.Items[0].SubItems[1].Text = string.Format("{0:0,0}", ord_code);
-                listView1.Items[0].SubItems[2].Text = string.Format(convertSN(ord_code));
-                listView1.Items[0].SubItems[3].Text = string.Format(ord_side);
-                listView1.Items[0].SubItems[4].Text = string.Format("{0:0,0}", done_qty);
+                listView1.Items[i].SubItems[0].Text = string.Format(ord_no);
+                listView1.Items[i].SubItems[1].Text = string.Format("{0:0,0}", ord_code);
+                listView1.Items[i].SubItems[2].Text = string.Format(convertSN(ord_code));
+                listView1.Items[i].SubItems[3].Text = string.Format(ord_side);
+                listView1.Items[i].SubItems[4].Text = string.Format("{0:0,0}", done_qty);
+                listView1.Items[i].SubItems[5].Text = string.Format("{0:0,0}", org_qty);
 
-        }
+            }
 
             
 

@@ -18,13 +18,14 @@ namespace StockA
 
             listView1.View = View.Details;
             listView1.ShowItemToolTips = true;
-            //listView1.MouseUp += new System.Windows.Forms.MouseEventHandler(listView1_MouseUp);
+            listView1.MouseUp += new System.Windows.Forms.MouseEventHandler(listView1_MouseUp);
 
             listView1.Columns.Add("주문번호");
             listView1.Columns.Add("종목번호");
             listView1.Columns.Add("종목명");
             listView1.Columns.Add("구분");
             listView1.Columns.Add("체결수량");
+            listView1.Columns.Add("주문수량");
 
             listView1.Columns[0].Width = 300;
             listView1.Columns[0].TextAlign = HorizontalAlignment.Center;
@@ -46,9 +47,14 @@ namespace StockA
             
             OrderCur odc = new OrderCur(listView1, accno, accpw);
 
-            var row1 = new ListViewItem(new[] { "", "", "", "", "" });
+            
+            if (!Form1.logged)
+            {
+                MessageBox.Show("로그인이 필요합니다");
+                return;
+            }
 
-            listView1.Items.Add(row1);
+            
             odc.request();
 
 
@@ -67,7 +73,35 @@ namespace StockA
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.Close();
+            this.Hide();
+            this.Visible=false;
+        }
+
+        private void listView1_MouseUp(object sender, MouseEventArgs e)
+        {
+            ListViewHitTestInfo HI = listView1.HitTest(e.Location);
+            if (e.Button == MouseButtons.Right)
+            {
+                //마우스 우클릭 현재가 매도
+                Point mousePosition = listView1.PointToClient(Control.MousePosition);
+                ListViewHitTestInfo hit = listView1.HitTest(mousePosition);
+                int columnindex = hit.Item.SubItems.IndexOf(hit.SubItem);
+                int rowindex = hit.Item.Index;
+                //MessageBox.Show(rowindex.ToString());
+                CancelOrder co = new CancelOrder();
+                co.StartPosition = FormStartPosition.Manual;
+                co.Location = Cursor.Position;
+                co.Show();
+
+
+
+            }
+
+        }
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+
         }
     }
 }
