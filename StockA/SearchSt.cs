@@ -54,7 +54,7 @@ namespace StockA
             List<string> AuthorList = new List<string>();
             foreach (ListViewItem sl in this.bucket.Items)
             {
-                this.output.Text += sl.SubItems[0].Text + Environment.NewLine;
+                //this.output.Text += sl.SubItems[0].Text + Environment.NewLine;
                 AuthorList.Add(sl.SubItems[0].Text);
             }
             return AuthorList;
@@ -74,7 +74,7 @@ namespace StockA
             int nCount = Convert.ToInt32(r1);
 
 
-            this.output.Text += "보유종목 =>" + Environment.NewLine;
+            //this.output.Text += "보유종목 =>" + Environment.NewLine;
 
             getBucketItem();
             Order od = new Order(this.output, this.account_number, this.account_pwd);
@@ -90,11 +90,13 @@ namespace StockA
                     price = t1857.GetFieldData("t1857OutBlock1", "price", i);
 
                     //check if the stock exist in a bucket
+                    // 보유종목 리스트에 있으면 제외
                     List<string> bucketItem = getBucketItem();
                     bool isBucket = false;
 
                     foreach (string bl in bucketItem)
-                    {
+                    {   
+                        
                         if (shcode == bl)
                         {
                             isBucket = true;
@@ -102,11 +104,16 @@ namespace StockA
                         }
                             
                     }
+                    //미체결 주문 목록에 있으면 제외
+
                     //order it
                     if (!isBucket)
                     {
-                        od.request(shcode, price, "2");
+                        od.request(shcode, price, "2", "15");
+                        this.output.Text += shcode + Environment.NewLine;
+
                         od.end();
+                        
                     }
                 }
             }
@@ -121,7 +128,7 @@ namespace StockA
         {
             t1857.SetFieldData("t1857InBlock", "sRealFlag", 0, "0"); //실시간 조회는 실계좌일 때만 가능
             t1857.SetFieldData("t1857InBlock", "sSearchFlag", 0, "S");
-            t1857.SetFieldData("t1857InBlock", "query_index", 0, this.id+"  0001");
+            t1857.SetFieldData("t1857InBlock", "query_index", 0, this.id+"  0000");
 
             //tr요청
             int result = t1857.RequestService("t1857", "");

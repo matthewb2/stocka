@@ -30,11 +30,20 @@ namespace StockA
         public QuickOrd qo;
         public ListCurSt lsc;
 
-
+        Balance bl;
         public Form1()
         {
             InitializeComponent();
+
             
+
+
+            //간단주문 준비
+            qo = new QuickOrd(logtxtBox, accno, accno);
+
+            lsc = new ListCurSt();
+
+
 
             textBox4.Text = "";
             textBox2.Text = "";
@@ -51,13 +60,14 @@ namespace StockA
             listView1.Columns.Add("추정순자산");
             listView1.Columns.Add("평가금액");
             listView1.Columns.Add("평가손익");
+            listView1.Columns.Add("손익률(%)");
             listView1.Columns.Add("당일실현손익");
             listView1.Columns.Add("매입금액");
 
             listView1.Columns.Add("예탁자산총액");
             listView1.Columns.Add("D+1 예수금");
             listView1.Columns.Add("D+2 예수금");
-            listView1.Columns.Add("손익률(%)");
+            
             listView1.Columns.Add("보유종목수");
             //
             listView1.Columns[0].Width = 300;
@@ -155,20 +165,19 @@ namespace StockA
         {
             logtxtBox.Text += "로그인 okay" + Environment.NewLine;
             logged = true;
-            button2.Enabled = true;
+            if(!button2.Enabled)
+                button2.Enabled = true;
 
             //잔고
             int nCount = session.GetAccountListCount();
             //
             logtxtBox.Text += String.Format("보유계좌수: {0}", nCount) + Environment.NewLine;
-            Balance bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
+
+            bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
+
             bl.request();
 
-            //간단주문 준비
-            qo = new QuickOrd(logtxtBox, accno, accno);
-
-            lsc = new ListCurSt();
-
+            
             //test codes here
             Order or = new Order(logtxtBox, accno, accpw);
             //or.request("086520", "601000");
@@ -192,13 +201,13 @@ namespace StockA
                 //Application.Exit();
             }
             else
-            {
-                //MessageBox.Show("아니요");
+            {   
                 session.Logout();
                 button2.Enabled = false;
                 button1.Enabled = true;
-                if (button1.Enabled)
-                    button4.Enabled = false;
+                button4.Enabled = false;
+                button3.Enabled = false;
+
 
             }
 
@@ -227,7 +236,7 @@ namespace StockA
                 int columnindex = hit.Item.SubItems.IndexOf(hit.SubItem);
                 int rowindex = hit.Item.Index;
                 //MessageBox.Show(rowindex.ToString());
-                SellHelper sh = new SellHelper(logtxtBox, accno, accpw);
+                SellHelper sh = new SellHelper(logtxtBox, listView2, accno, accpw);
                 sh.StartPosition = FormStartPosition.Manual;
                 sh.Location = Cursor.Position;
                 sh.Show();
@@ -309,12 +318,14 @@ namespace StockA
 
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
         {
-
+            
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             sst.end();
+            button3.Enabled = false;
+            button2.Enabled = true;
         }
 
         private void 간단주문ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -334,6 +345,11 @@ namespace StockA
             
         }
 
+        private void 정보ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void 주문내역확인ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //
@@ -349,6 +365,12 @@ namespace StockA
 
                 lsc.Show();
                 lsc.Visible = true;
+
+                //string accno = "55501502101";
+                //string accpw = "0000";
+
+                OrderCur odc = new OrderCur(lsc.listView1, accno, accpw);
+                odc.request();
             }
 
 
@@ -356,9 +378,9 @@ namespace StockA
 
         private void 정보ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            About ab = new About();
-            ab.Show();
-
+            //About ab = new About();
+            //ab.Show();
+            bl.request();
         }
     }
 

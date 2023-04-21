@@ -35,7 +35,7 @@ namespace StockA
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(4, 5);
+            this.button1.Location = new System.Drawing.Point(4, 2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(92, 23);
             this.button1.TabIndex = 0;
@@ -45,7 +45,7 @@ namespace StockA
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(102, 5);
+            this.button2.Location = new System.Drawing.Point(102, 2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(93, 23);
             this.button2.TabIndex = 1;
@@ -58,7 +58,7 @@ namespace StockA
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.ClientSize = new System.Drawing.Size(205, 39);
+            this.ClientSize = new System.Drawing.Size(202, 30);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;

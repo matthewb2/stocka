@@ -60,15 +60,15 @@ namespace StockA
             CSPAT00600.RemoveService("CSPAT00600", this.keyVal);
         }
 
-        public void request(string code, string price, string sorb) {
+        public void request(string code, string price, string sorb, string qty) {
             /*
             이베스트 서버에 일회성 TR data 요청함.
             */
             
-            CSPAT00600.SetFieldData("CSPAT00600InBlock1", "AcntNo", 0, "55501502101");
-            CSPAT00600.SetFieldData("CSPAT00600InBlock1", "InptPwd", 0, "0000");
+            CSPAT00600.SetFieldData("CSPAT00600InBlock1", "AcntNo", 0, this.account_number);
+            CSPAT00600.SetFieldData("CSPAT00600InBlock1", "InptPwd", 0, this.account_pwd);
             CSPAT00600.SetFieldData("CSPAT00600InBlock1", "IsuNo", 0, code);
-            CSPAT00600.SetFieldData("CSPAT00600InBlock1", "OrdQty", 0, "15"); //주문수량
+            CSPAT00600.SetFieldData("CSPAT00600InBlock1", "OrdQty", 0, qty); //주문수량
             CSPAT00600.SetFieldData("CSPAT00600InBlock1", "OrdPrc", 0, price); //주문가
             CSPAT00600.SetFieldData("CSPAT00600InBlock1", "BnsTpCode", 0, sorb); //매매구분) side : 2 (매수)  1(매도)
             CSPAT00600.SetFieldData("CSPAT00600InBlock1", "OrdprcPtnCode", 0, "00"); //호가유형코드

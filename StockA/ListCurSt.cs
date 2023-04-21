@@ -40,26 +40,8 @@ namespace StockA
 
             SetHeight(listView1, 40);
 
-
-            string accno = "55501502101";
-            string accpw = "0000";
-
+                    
             
-            OrderCur odc = new OrderCur(listView1, accno, accpw);
-
-            
-            if (!Form1.logged)
-            {
-                MessageBox.Show("로그인이 필요합니다");
-                return;
-            }
-
-            
-            odc.request();
-
-
-
-
         }
 
         private void SetHeight(ListView LV, int height)

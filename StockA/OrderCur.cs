@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XA_DATASETLib;
+using System.Drawing;
 
 namespace StockA
 {
@@ -71,10 +72,7 @@ namespace StockA
             //
             int nCount = t0425.GetBlockCount("t0425OutBlock1");
             string ord_no, ord_code, ord_name, ord_side, org_qty, ord_price, done_price, done_qty;
-            //int org_qty, ord_price, done_price, done_qty;
-
-            //
-            //listView1.DataSource = null;
+            
             listView1.Items.Clear();
 
             for (int i = 0; i < nCount; i++) {
@@ -97,6 +95,16 @@ namespace StockA
                 listView1.Items[i].SubItems[3].Text = string.Format(ord_side);
                 listView1.Items[i].SubItems[4].Text = string.Format("{0:0,0}", done_qty);
                 listView1.Items[i].SubItems[5].Text = string.Format("{0:0,0}", org_qty);
+                listView1.Items[i].UseItemStyleForSubItems = false;
+                if (ord_side == "매도")
+                {
+                    listView1.Items[i].SubItems[3].ForeColor = Color.Blue;
+                }
+                else
+                {
+                    listView1.Items[i].SubItems[3].ForeColor = Color.Red;
+
+                }
 
             }
 

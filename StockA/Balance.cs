@@ -66,7 +66,7 @@ namespace StockA
             이베스트 서버에서 ReceiveData 이벤트 받으면 실행되는 event handler
             */
 
-            
+           
 
             this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
 
@@ -77,18 +77,18 @@ namespace StockA
 
             //this.output.Text += String.Format("t0424 => {0} {1} {2} {3}", c1, c2, c3, c4) + Environment.NewLine;
 
-            this.balance_sheet.Items[0].SubItems[5].Text = string.Format("{0:0,0}", c1);
-            this.balance_sheet.Items[0].SubItems[6].Text = string.Format("{0:#,0}", Convert.ToInt32(c2));
-            this.balance_sheet.Items[0].SubItems[7].Text = string.Format("{0:#,0}", Convert.ToInt32(c3));
-            this.balance_sheet.Items[0].SubItems[8].Text = string.Format("{0:0.00}", float.Parse(c4)*100);
+            this.balance_sheet.Items[0].SubItems[6].Text = string.Format("{0:0,0}", c1);
+            this.balance_sheet.Items[0].SubItems[7].Text = string.Format("{0:#,0}", Convert.ToInt32(c2));
+            this.balance_sheet.Items[0].SubItems[8].Text = string.Format("{0:#,0}", Convert.ToInt32(c3));
+            this.balance_sheet.Items[0].SubItems[3].Text = string.Format("{0:0.00}", float.Parse(c4)*100);
             this.balance_sheet.Items[0].UseItemStyleForSubItems = false;
             if (float.Parse(c4) < 0)
             {
-                this.balance_sheet.Items[0].SubItems[8].ForeColor = Color.Blue;
+                this.balance_sheet.Items[0].SubItems[3].ForeColor = Color.Blue;
             }
             else
             {
-                this.balance_sheet.Items[0].SubItems[8].ForeColor = Color.Red;
+                this.balance_sheet.Items[0].SubItems[3].ForeColor = Color.Red;
 
             }
 
@@ -121,8 +121,8 @@ namespace StockA
             this.balance_sheet.Items[0].SubItems[0].Text = string.Format("{0:N0}", Convert.ToInt32(r1));
             this.balance_sheet.Items[0].SubItems[1].Text = string.Format("{0:N0}", Convert.ToInt32(r2));
             this.balance_sheet.Items[0].SubItems[2].Text = string.Format("{0:N0}", Convert.ToInt32(r3));
-            this.balance_sheet.Items[0].SubItems[3].Text = string.Format("{0:N0}", Convert.ToInt32(r4));
-            this.balance_sheet.Items[0].SubItems[4].Text = string.Format("{0:N0}", Convert.ToInt32(r5));
+            this.balance_sheet.Items[0].SubItems[4].Text = string.Format("{0:N0}", Convert.ToInt32(r4));
+            this.balance_sheet.Items[0].SubItems[5].Text = string.Format("{0:N0}", Convert.ToInt32(r5));
             
             this.balance_sheet.Items[0].UseItemStyleForSubItems = false;
             if (Convert.ToInt32(r3) < 0)
@@ -136,11 +136,11 @@ namespace StockA
             }
             if (Convert.ToInt32(r4) < 0)
             {
-                this.balance_sheet.Items[0].SubItems[3].ForeColor = Color.Blue;
+                this.balance_sheet.Items[0].SubItems[4].ForeColor = Color.Blue;
             }
             else
             {
-                this.balance_sheet.Items[0].SubItems[3].ForeColor = Color.Red;
+                this.balance_sheet.Items[0].SubItems[4].ForeColor = Color.Red;
 
             }
             //            
@@ -161,7 +161,7 @@ namespace StockA
             int p1, p2, p3;
             //
             //this.stocks.Items.Clear();
-            
+            this.stocks.Items.Clear();
 
             for (int i = 0; i < nCount; i++)
             {

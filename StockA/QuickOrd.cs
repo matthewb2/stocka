@@ -14,6 +14,7 @@ namespace StockA
     {
         private string accno, accpw;
         private TextBox txtbox;
+        Order or;
         public QuickOrd(TextBox txtbox, string accno, string accpw)
         {
             this.txtbox = txtbox;
@@ -21,6 +22,8 @@ namespace StockA
             this.accpw = accpw;
 
             InitializeComponent();
+
+            or = new Order(txtbox, accno, accpw);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -36,7 +39,7 @@ namespace StockA
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Order or = new Order(txtbox, accno, accpw);
+            //or = new Order(txtbox, accno, accpw);
             //or.request("011500", "20050");
             this.txtbox.Text += textBox4.Text + Environment.NewLine;
             this.txtbox.Text += textBox1.Text.Replace(",", "") + Environment.NewLine;
@@ -48,7 +51,8 @@ namespace StockA
                     MessageBox.Show("가격란에 유효한 값이 아닙니다");
                 }
                 string code = textBox4.Text;
-                or.request(code, price, "1");
+                or.request(code, price, "1", "15");
+                or.end();
             }
             
         }

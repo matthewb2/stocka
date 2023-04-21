@@ -16,12 +16,17 @@ namespace StockA
     {
         string accno, accpw;
         TextBox logtextBox;
-        public SellHelper(TextBox textBox, string accno, string accpw)
+        ListView listView1;
+        Order or;
+        public SellHelper(TextBox textBox, ListView lst, string accno, string accpw)
         {
             InitializeComponent();
             this.logtextBox = textBox;
             this.accno = accno;
             this.accpw = accpw;
+            this.listView1 = lst;
+            or = new Order(logtextBox, accno, accpw);
+
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -31,8 +36,24 @@ namespace StockA
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Order or = new Order(logtextBox, accno, accpw);
-            or.request("011500", "22050", "2");
+            
+            Point mousePosition = listView1.PointToClient(Control.MousePosition);
+            ListViewHitTestInfo hit = listView1.HitTest(mousePosition);
+            int columnindex = hit.Item.SubItems.IndexOf(hit.SubItem);
+            int rowindex = hit.Item.Index;
+            string code = listView1.Items[rowindex].SubItems[0].Text;
+            string price = listView1.Items[rowindex].SubItems[2].Text;
+            string qty = listView1.Items[rowindex].SubItems[4].Text;
+            price = price.Replace(",", "");
+
+
+            this.logtextBox.Text += code + Environment.NewLine;
+            
+
+            or.request(code, price, "1", qty);
+
+            or.end();
+
             this.Close();
 
         }
