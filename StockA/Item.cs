@@ -14,6 +14,10 @@ namespace StockA
         public string datetime;
         public string[] light;
         public int temp;
+        public string method;
+        public int km;
+        public int profitrate;
+        public int lossrate;
         public bool vcc;
         public bool vcc2;
     }

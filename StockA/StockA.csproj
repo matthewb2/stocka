@@ -112,6 +112,7 @@
     <Compile Include="SellHelper.Designer.cs">
       <DependentUpon>SellHelper.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockInfo.cs" />
     <Compile Include="Strategy.cs" />
     <EmbeddedResource Include="About.resx">
       <DependentUpon>About.cs</DependentUpon>

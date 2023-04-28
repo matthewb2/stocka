@@ -15,10 +15,10 @@ namespace StockA
     public partial class SellHelper : Form
     {
         string accno, accpw;
-        TextBox logtextBox;
+        RichTextBox logtextBox;
         ListView listView1;
         Order or;
-        public SellHelper(TextBox textBox, ListView lst, string accno, string accpw)
+        public SellHelper(RichTextBox textBox, ListView lst, string accno, string accpw)
         {
             InitializeComponent();
             this.logtextBox = textBox;

@@ -15,12 +15,13 @@ namespace StockA
         string keyVal;
         string account_number;
         string account_pwd;
+        string method;
 
-        public TextBox output;
+        public RichTextBox output;
 
-        public Order(TextBox output, string accno, string accpw) {
+        public Order(RichTextBox output, string accno, string accpw) {
             this.output = output;
-
+            //this.method = method;
             CSPAT00600 = new XAQueryClass();
             CSPAT00600.ResFileName = @"C:\eBEST\xingAPI\Res\CSPAT00600.res"; //RES 파일 등록
 

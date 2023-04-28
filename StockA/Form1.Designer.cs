@@ -61,7 +61,7 @@ namespace StockA
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.listView1 = new System.Windows.Forms.ListView();
             this.listView2 = new System.Windows.Forms.ListView();
-            this.logtxtBox = new System.Windows.Forms.TextBox();
+            this.logtxtBox = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -134,7 +134,7 @@ namespace StockA
             // 잔고내역확인ToolStripMenuItem
             // 
             this.잔고내역확인ToolStripMenuItem.Name = "잔고내역확인ToolStripMenuItem";
-            this.잔고내역확인ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.잔고내역확인ToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.잔고내역확인ToolStripMenuItem.Text = "잔고내역확인";
             this.잔고내역확인ToolStripMenuItem.Click += new System.EventHandler(this.정보ToolStripMenuItem_Click);
             // 
@@ -149,7 +149,7 @@ namespace StockA
             // 정보ToolStripMenuItem1
             // 
             this.정보ToolStripMenuItem1.Name = "정보ToolStripMenuItem1";
-            this.정보ToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.정보ToolStripMenuItem1.Size = new System.Drawing.Size(98, 22);
             this.정보ToolStripMenuItem1.Text = "정보";
             this.정보ToolStripMenuItem1.Click += new System.EventHandler(this.정보ToolStripMenuItem1_Click);
             // 
@@ -409,14 +409,15 @@ namespace StockA
             // 
             // logtxtBox
             // 
+            this.logtxtBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.logtxtBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logtxtBox.Location = new System.Drawing.Point(5, 5);
             this.logtxtBox.Margin = new System.Windows.Forms.Padding(5);
-            this.logtxtBox.Multiline = true;
             this.logtxtBox.Name = "logtxtBox";
-            this.logtxtBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.logtxtBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.logtxtBox.Size = new System.Drawing.Size(1043, 191);
             this.logtxtBox.TabIndex = 0;
+            this.logtxtBox.Text = "";
             // 
             // Form1
             // 
@@ -433,7 +434,6 @@ namespace StockA
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
@@ -460,7 +460,7 @@ namespace StockA
         private System.Windows.Forms.ToolStripMenuItem 주문ToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
-        private System.Windows.Forms.TextBox logtxtBox;
+        private System.Windows.Forms.RichTextBox logtxtBox;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;

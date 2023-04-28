@@ -16,8 +16,8 @@ namespace StockA
         public bool is_data_received;
         public string keyVal;
         
-        public TextBox output;
-        public CurrentSt(TextBox output, ListView balance_sheet, ListView stocks)
+        public RichTextBox output;
+        public CurrentSt(RichTextBox output, ListView balance_sheet, ListView stocks)
         {
             this.output = output;
 

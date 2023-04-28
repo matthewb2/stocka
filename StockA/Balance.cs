@@ -25,8 +25,8 @@ namespace StockA
         ListView stocks;
 
 
-        public TextBox output;
-        public Balance(TextBox output, ListView balance_sheet, ListView stocks, string accno, string accpw)
+        public RichTextBox output;
+        public Balance(RichTextBox output, ListView balance_sheet, ListView stocks, string accno, string accpw)
         {
             this.output = output;
             this.balance_sheet = balance_sheet;
@@ -77,10 +77,10 @@ namespace StockA
 
             //this.output.Text += String.Format("t0424 => {0} {1} {2} {3}", c1, c2, c3, c4) + Environment.NewLine;
 
-            this.balance_sheet.Items[0].SubItems[6].Text = string.Format("{0:0,0}", c1);
-            this.balance_sheet.Items[0].SubItems[7].Text = string.Format("{0:#,0}", Convert.ToInt32(c2));
-            this.balance_sheet.Items[0].SubItems[8].Text = string.Format("{0:#,0}", Convert.ToInt32(c3));
-            this.balance_sheet.Items[0].SubItems[3].Text = string.Format("{0:0.00}", float.Parse(c4)*100);
+            this.balance_sheet.Items[0].SubItems[7].Text = string.Format("{0:0,0}", c1);
+            this.balance_sheet.Items[0].SubItems[8].Text = string.Format("{0:#,0}", Convert.ToInt32(c2));
+            this.balance_sheet.Items[0].SubItems[9].Text = string.Format("{0:#,0}", Convert.ToInt32(c3));
+            this.balance_sheet.Items[0].SubItems[4].Text = string.Format("{0:0.00}", float.Parse(c4)*100);
             this.balance_sheet.Items[0].UseItemStyleForSubItems = false;
             if (float.Parse(c4) < 0)
             {
@@ -119,28 +119,28 @@ namespace StockA
             this.balance_sheet.Items.Add(row1);
 
             this.balance_sheet.Items[0].SubItems[0].Text = string.Format("{0:N0}", Convert.ToInt32(r1));
-            this.balance_sheet.Items[0].SubItems[1].Text = string.Format("{0:N0}", Convert.ToInt32(r2));
-            this.balance_sheet.Items[0].SubItems[2].Text = string.Format("{0:N0}", Convert.ToInt32(r3));
-            this.balance_sheet.Items[0].SubItems[4].Text = string.Format("{0:N0}", Convert.ToInt32(r4));
-            this.balance_sheet.Items[0].SubItems[5].Text = string.Format("{0:N0}", Convert.ToInt32(r5));
+            this.balance_sheet.Items[0].SubItems[2].Text = string.Format("{0:N0}", Convert.ToInt32(r2));
+            this.balance_sheet.Items[0].SubItems[3].Text = string.Format("{0:N0}", Convert.ToInt32(r3));
+            this.balance_sheet.Items[0].SubItems[6].Text = string.Format("{0:N0}", Convert.ToInt32(r4));
+            this.balance_sheet.Items[0].SubItems[1].Text = string.Format("{0:N0}", Convert.ToInt32(r5));
             
             this.balance_sheet.Items[0].UseItemStyleForSubItems = false;
             if (Convert.ToInt32(r3) < 0)
-            {
-                this.balance_sheet.Items[0].SubItems[2].ForeColor = Color.Blue;
-            }
-            else
-            {
-                this.balance_sheet.Items[0].SubItems[2].ForeColor = Color.Red;
-
-            }
-            if (Convert.ToInt32(r4) < 0)
             {
                 this.balance_sheet.Items[0].SubItems[4].ForeColor = Color.Blue;
             }
             else
             {
                 this.balance_sheet.Items[0].SubItems[4].ForeColor = Color.Red;
+
+            }
+            if (Convert.ToInt32(r4) < 0)
+            {
+                this.balance_sheet.Items[0].SubItems[6].ForeColor = Color.Blue;
+            }
+            else
+            {
+                this.balance_sheet.Items[0].SubItems[6].ForeColor = Color.Red;
 
             }
             //            
@@ -153,7 +153,7 @@ namespace StockA
 
             //
             int nCount = t0424.GetBlockCount("t0424OutBlock1");
-            this.balance_sheet.Items[0].SubItems[9].Text = nCount.ToString();
+            this.balance_sheet.Items[0].SubItems[5].Text = nCount.ToString();
 
             this.output.Text += String.Format("ncount: {0}", nCount) + Environment.NewLine;
             string s1, s2, s3, s4, s5,p4;
@@ -162,6 +162,8 @@ namespace StockA
             //
             //this.stocks.Items.Clear();
             this.stocks.Items.Clear();
+
+            StockInfo si = new StockInfo(this.output, this.stocks);
 
             for (int i = 0; i < nCount; i++)
             {
@@ -181,7 +183,7 @@ namespace StockA
                 //
                 //this.output.Text += String.Format("t0424 => {0} {1} {2} {3} {4} {5} {6} {7}", s1, s2, s3, s4, s5, p1, p2, p4) + Environment.NewLine;
 
-                var row2 = new ListViewItem(new[] { "", "", "", "", "", "", "", "","" });
+                var row2 = new ListViewItem(new[] { "", "", "", "", "", "", "","","" });
                 row2.ToolTipText = "클릭하여 주문";
                 this.stocks.Items.Add(row2);
                 
@@ -213,6 +215,9 @@ namespace StockA
                     this.stocks.Items[i].SubItems[8].ForeColor = Color.Red;
 
                 }
+                //
+                //this.stocks.Items[i].Selected = true;
+
 
             }
             foreach (ColumnHeader column in this.stocks.Columns)
@@ -229,6 +234,7 @@ namespace StockA
                 this.output.Text += String.Format("{ 'error':{ 'message':'order failed'} }") + Environment.NewLine;
             }
 
+            is_data_received = true;
 
         }
         public void end()

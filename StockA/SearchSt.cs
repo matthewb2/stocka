@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XA_DATASETLib;
@@ -17,16 +18,25 @@ namespace StockA
         public bool is_data_received;
         public string keyVal;
         public string id;
-        public TextBox output;
+        public string method;
+        public int km;
+        public RichTextBox output;
         public ListView bucket;
+        public ListView notyet;
         private string account_number, account_pwd;
+        public Order od;
 
-        public SearchSt(TextBox output, ListView bucket, string id, string accno, string accpw)
+        public SearchSt(RichTextBox output, ListView bucket, ListView notyet, string id, string accno, 
+                            string accpw, string method, int km)
         {
+            //od = new Order(this.output, this.account_number, this.account_pwd);
+
             this.output = output;
             this.bucket = bucket;
+            this.notyet = notyet;
             this.id = id;
-
+            this.method = method;
+            this.km = km;
             this.is_data_received = false;
 
             t1857 = new XAQueryClass();
@@ -52,7 +62,7 @@ namespace StockA
         public List<string> getBucketItem()
         {
             List<string> AuthorList = new List<string>();
-            foreach (ListViewItem sl in this.bucket.Items)
+            foreach (ListViewItem sl in this.notyet.Items)
             {
                 //this.output.Text += sl.SubItems[0].Text + Environment.NewLine;
                 AuthorList.Add(sl.SubItems[0].Text);
@@ -77,7 +87,7 @@ namespace StockA
             //this.output.Text += "보유종목 =>" + Environment.NewLine;
 
             getBucketItem();
-            Order od = new Order(this.output, this.account_number, this.account_pwd);
+            
 
             string shcode, hname, price;
             if (nCount > 0)
@@ -92,32 +102,80 @@ namespace StockA
                     //check if the stock exist in a bucket
                     // 보유종목 리스트에 있으면 제외
                     List<string> bucketItem = getBucketItem();
-                    bool isBucket = false;
+                    bool isDup = false;
 
                     foreach (string bl in bucketItem)
                     {   
                         
                         if (shcode == bl)
                         {
-                            isBucket = true;
+                            isDup = true;
                             break;
                         }
                             
                     }
                     //미체결 주문 목록에 있으면 제외
+                    Dictionary<string, string> AuthorList = new Dictionary<string, string>();
+                    foreach (ListViewItem sl in this.notyet.Items)
+                    {
+                        //this.output.Text += sl.SubItems[0].Text + Environment.NewLine;
+                        AuthorList.Add(sl.SubItems[1].Text, sl.SubItems[4].Text);
+                    }
+
+                    foreach (KeyValuePair<string, string> bl in AuthorList)
+                    {
+
+                        if (bl.Key == shcode)
+                        {
+                            isDup = true;
+                            break;
+                        }
+
+                    }
 
                     //order it
-                    if (!isBucket)
+                    if (!isDup)
                     {
-                        od.request(shcode, price, "2", "15");
-                        this.output.Text += shcode + Environment.NewLine;
+                        if (method == "km")
+                        {
 
-                        od.end();
+                            //금액으로 매수
+                            string qnt = getQnt(price, this.km.ToString());
+                            this.output.Text += String.Format("{0} {1}주", shcode, qnt) + "를 매수합니다" + Environment.NewLine;
+                            string[] param = { shcode, price, qnt};
+                            Thread th = new Thread(new ParameterizedThreadStart(requestact));
+                            //od.request(shcode, price, "2", qnt);
+                            //od.end();
+                            th.Start(param);
+                            Thread.Sleep(100);
+
+                        }
+                        else
+                        {
+                            //수량으로 매수
+                            od.request(shcode, price, "2", "15");
+                            this.output.Text += shcode +"를 매수합니다" + Environment.NewLine;
+                        }
                         
                     }
                 }
             }
 
+        }
+        public void requestact(object param)
+        {
+            string[] data = param as string[];
+            Console.WriteLine(data[0]+" "+ data[1]+" "+data[2]);
+            od = new Order(this.output, this.account_number, this.account_pwd);
+            od.request(data[0], data[1], "2", data[2]);
+            
+            od.end();
+        }
+        public string getQnt(string price, string notes)
+        {
+            int qn = Convert.ToInt32(notes) / Convert.ToInt32(price);
+
+            return qn.ToString();
         }
         public void end()
         {

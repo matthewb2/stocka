@@ -13,9 +13,9 @@ namespace StockA
     public partial class QuickOrd : Form
     {
         private string accno, accpw;
-        private TextBox txtbox;
+        private RichTextBox txtbox;
         Order or;
-        public QuickOrd(TextBox txtbox, string accno, string accpw)
+        public QuickOrd(RichTextBox txtbox, string accno, string accpw)
         {
             this.txtbox = txtbox;
             this.accno = accno;
