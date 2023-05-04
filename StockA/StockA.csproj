@@ -75,6 +75,7 @@
       <DependentUpon>CancelOrder.cs</DependentUpon>
     </Compile>
     <Compile Include="CurrentSt.cs" />
+    <Compile Include="HoldStock.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="ListCurSt.cs">
       <SubType>Form</SubType>

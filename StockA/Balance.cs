@@ -77,18 +77,18 @@ namespace StockA
 
             //this.output.Text += String.Format("t0424 => {0} {1} {2} {3}", c1, c2, c3, c4) + Environment.NewLine;
 
-            this.balance_sheet.Items[0].SubItems[7].Text = string.Format("{0:0,0}", c1);
-            this.balance_sheet.Items[0].SubItems[8].Text = string.Format("{0:#,0}", Convert.ToInt32(c2));
-            this.balance_sheet.Items[0].SubItems[9].Text = string.Format("{0:#,0}", Convert.ToInt32(c3));
+            //this.balance_sheet.Items[0].SubItems[7].Text = string.Format("{0:0,0}", c1);
+            this.balance_sheet.Items[0].SubItems[7].Text = string.Format("{0:#,0}", Convert.ToInt32(c2));
+            this.balance_sheet.Items[0].SubItems[8].Text = string.Format("{0:#,0}", Convert.ToInt32(c3));
             this.balance_sheet.Items[0].SubItems[4].Text = string.Format("{0:0.00}", float.Parse(c4)*100);
             this.balance_sheet.Items[0].UseItemStyleForSubItems = false;
             if (float.Parse(c4) < 0)
             {
-                this.balance_sheet.Items[0].SubItems[3].ForeColor = Color.Blue;
+                this.balance_sheet.Items[0].SubItems[4].ForeColor = Color.Blue;
             }
             else
             {
-                this.balance_sheet.Items[0].SubItems[3].ForeColor = Color.Red;
+                this.balance_sheet.Items[0].SubItems[4].ForeColor = Color.Red;
 
             }
 
@@ -114,7 +114,7 @@ namespace StockA
             //initialization
             this.balance_sheet.Items.Clear();
 
-            var row1 = new ListViewItem(new[] { "", "", "", "", "", "", "", "", "", "" });
+            var row1 = new ListViewItem(new[] { "", "", "", "", "", "", "", "", "" });
 
             this.balance_sheet.Items.Add(row1);
 
@@ -127,11 +127,11 @@ namespace StockA
             this.balance_sheet.Items[0].UseItemStyleForSubItems = false;
             if (Convert.ToInt32(r3) < 0)
             {
-                this.balance_sheet.Items[0].SubItems[4].ForeColor = Color.Blue;
+                this.balance_sheet.Items[0].SubItems[3].ForeColor = Color.Blue;
             }
             else
             {
-                this.balance_sheet.Items[0].SubItems[4].ForeColor = Color.Red;
+                this.balance_sheet.Items[0].SubItems[3].ForeColor = Color.Red;
 
             }
             if (Convert.ToInt32(r4) < 0)

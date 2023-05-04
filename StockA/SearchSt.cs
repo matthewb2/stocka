@@ -29,8 +29,7 @@ namespace StockA
         public SearchSt(RichTextBox output, ListView bucket, ListView notyet, string id, string accno, 
                             string accpw, string method, int km)
         {
-            //od = new Order(this.output, this.account_number, this.account_pwd);
-
+            
             this.output = output;
             this.bucket = bucket;
             this.notyet = notyet;
@@ -64,7 +63,6 @@ namespace StockA
             List<string> AuthorList = new List<string>();
             foreach (ListViewItem sl in this.notyet.Items)
             {
-                //this.output.Text += sl.SubItems[0].Text + Environment.NewLine;
                 AuthorList.Add(sl.SubItems[0].Text);
             }
             return AuthorList;
@@ -82,9 +80,6 @@ namespace StockA
             this.output.Text += String.Format("API Key =>  {0}", this.keyVal) + Environment.NewLine;
 
             int nCount = Convert.ToInt32(r1);
-
-
-            //this.output.Text += "보유종목 =>" + Environment.NewLine;
 
             getBucketItem();
             
@@ -132,7 +127,6 @@ namespace StockA
                         }
 
                     }
-
                     //order it
                     if (!isDup)
                     {
@@ -144,10 +138,9 @@ namespace StockA
                             this.output.Text += String.Format("{0} {1}주", shcode, qnt) + "를 매수합니다" + Environment.NewLine;
                             string[] param = { shcode, price, qnt};
                             Thread th = new Thread(new ParameterizedThreadStart(requestact));
-                            //od.request(shcode, price, "2", qnt);
-                            //od.end();
                             th.Start(param);
                             Thread.Sleep(100);
+                            
 
                         }
                         else
@@ -165,10 +158,8 @@ namespace StockA
         public void requestact(object param)
         {
             string[] data = param as string[];
-            Console.WriteLine(data[0]+" "+ data[1]+" "+data[2]);
             od = new Order(this.output, this.account_number, this.account_pwd);
             od.request(data[0], data[1], "2", data[2]);
-            
             od.end();
         }
         public string getQnt(string price, string notes)
@@ -187,9 +178,10 @@ namespace StockA
             t1857.SetFieldData("t1857InBlock", "sRealFlag", 0, "0"); //실시간 조회는 실계좌일 때만 가능
             t1857.SetFieldData("t1857InBlock", "sSearchFlag", 0, "S");
             t1857.SetFieldData("t1857InBlock", "query_index", 0, this.id+"  0000");
-
+            
             //tr요청
             int result = t1857.RequestService("t1857", "");
+            
             if (result <0)
                 MessageBox.Show("error");
 

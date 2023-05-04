@@ -42,8 +42,8 @@ namespace StockA
         public Form1()
         {
             InitializeComponent();
-
             
+
 
             //환경변수 로드
             string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
@@ -91,7 +91,6 @@ namespace StockA
             listView1.Columns.Add("손익률(%)");
             listView1.Columns.Add("보유종목수");
             listView1.Columns.Add("당일실현손익");
-            listView1.Columns.Add("예탁자산총액");
             listView1.Columns.Add("D+1 예수금");
             listView1.Columns.Add("D+2 예수금");
             
@@ -144,6 +143,8 @@ namespace StockA
             listView2.SelectedIndexChanged += listView2_SelectedIndexChanged;
 
             logtxtBox.Text += getTime() + Environment.NewLine;
+            //
+
             
 
         }
@@ -193,12 +194,15 @@ namespace StockA
             this.accno = textBox6.Text;
             this.accpw = textBox5.Text;
 
+            
+
             session = new XASessionClass();
             bool conn  = session.ConnectServer("demo.ebestsec.co.kr", 20001);
             button1.Enabled = false;
 
             //로그인 성공 메시지 수신 후에 보유계좌 수 호출 로그인 이벤트 핸들러를 이용
             session._IXASessionEvents_Event_Login += XASession_Login;
+
 
 
             if (conn)
@@ -212,7 +216,10 @@ namespace StockA
         }
         private void XASession_Login(string szCode, string szMsg)
         {
-            
+
+
+
+
             logtxtBox.Text += getTime()+" 로그인 okay" + Environment.NewLine;
             logged = true;
             if(!button2.Enabled)
@@ -225,11 +232,14 @@ namespace StockA
             logtxtBox.Text += String.Format("보유계좌수: {0}", nCount) + Environment.NewLine;
 
             bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
-            bl.request();
 
             //test codes here
             //Order or = new Order(logtxtBox, accno, accpw);
-        
+
+            bl.request();
+            bl.end();
+
+            
 
         }
 
@@ -238,6 +248,7 @@ namespace StockA
             if (running)
             {
                 session.Logout();
+                logged = false;
                 button2.Enabled = false;
                 button1.Enabled = true;
                 if (button1.Enabled)
@@ -251,7 +262,7 @@ namespace StockA
                 button1.Enabled = true;
                 button4.Enabled = false;
                 button3.Enabled = false;
-
+                logged = false;
 
             }
 
@@ -315,6 +326,21 @@ namespace StockA
             button3.Enabled = true;
             button2.Enabled = false;
             running = true;
+
+
+            //실시간 조건검색 로드
+            sst = new SearchSt(logtxtBox, listView2, lsc.listView1, id, accno, accpw, ordermethod, this.km);
+            sst.request();
+            sst.end();
+
+
+
+            foreach (ListViewItem sl in this.listView2.Items)
+            {
+                //Console.WriteLine(sl.SubItems[0].Text);
+             
+            }
+
             string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
 
             try
@@ -351,13 +377,9 @@ namespace StockA
             }
             
 
-            //실시간 조건검색 로드
-            sst = new SearchSt(logtxtBox, listView2, lsc.listView1, id, accno, accpw, ordermethod, this.km);
-            sst.request();
-            
-            sst.end();
+
             // 15:15:00 전량매도
-            SetUpTimer(new TimeSpan(15, 15, 00));
+            //SetUpTimer(new TimeSpan(15, 15, 00));
         }
 
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
@@ -420,9 +442,9 @@ namespace StockA
 
         private void 정보ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //About ab = new About();
-            //ab.Show();
-            bl.request();
+            if (logged)
+                bl.request();
+            else MessageBox.Show("로그인이 필요합니다");
         }
 
         private void SetUpTimer(TimeSpan alertTime)
@@ -444,6 +466,11 @@ namespace StockA
             //this runs at 15:15:00
             //전량 매도
             //MessageBox.Show("run");
+
+
+            HoldStock hs = new HoldStock(logtxtBox, accno, accpw);
+            hs.request();
+            hs.end();
         }
     }
 
