@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -47,6 +49,7 @@ namespace StockA
             // 모의투자
             this.account_number = accno;
             this.account_pwd = accpw;
+            od = new Order(this.output, this.account_number, this.account_pwd);
 
         }
 
@@ -60,11 +63,27 @@ namespace StockA
 
         public List<string> getBucketItem()
         {
+
+            //보유종목리스트
             List<string> AuthorList = new List<string>();
-            foreach (ListViewItem sl in this.notyet.Items)
+            Bucket items = new Bucket();
+            
+            string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+
+            using (StreamReader r = new StreamReader(path + @"\bucket.json"))
             {
-                AuthorList.Add(sl.SubItems[0].Text);
+                string json = r.ReadToEnd();
+
+                items = JsonConvert.DeserializeObject<Bucket>(json);
+                //MessageBox.Show(items.scode.Length.ToString());
+                foreach (string code in items.scode)
+                {
+                    //Console.WriteLine(code);
+                    AuthorList.Add(code);
+                }
             }
+
+            
             return AuthorList;
         }
         private void OnReceiveData(string tr_code)
@@ -81,13 +100,13 @@ namespace StockA
 
             int nCount = Convert.ToInt32(r1);
 
-            getBucketItem();
+            //getBucketItem();
             
 
             string shcode, hname, price;
             if (nCount > 0)
             {
-                for (int i = 0; i < nCount; i++)
+                for (int i = 0; i < 2; i++)
                 {
 
                     shcode = t1857.GetFieldData("t1857OutBlock1", "shcode", i);
@@ -98,29 +117,29 @@ namespace StockA
                     // 보유종목 리스트에 있으면 제외
                     List<string> bucketItem = getBucketItem();
                     bool isDup = false;
-
+                    
                     foreach (string bl in bucketItem)
-                    {   
-                        
+                    {
+                        //MessageBox.Show(bl);
                         if (shcode == bl)
                         {
+                            //MessageBox.Show(shcode);
                             isDup = true;
                             break;
                         }
                             
                     }
                     //미체결 주문 목록에 있으면 제외
-                    Dictionary<string, string> AuthorList = new Dictionary<string, string>();
+                    List<string> AuthorList = new List<string>();
                     foreach (ListViewItem sl in this.notyet.Items)
                     {
-                        //this.output.Text += sl.SubItems[0].Text + Environment.NewLine;
-                        AuthorList.Add(sl.SubItems[1].Text, sl.SubItems[4].Text);
+                        AuthorList.Add(sl.SubItems[1].Text);
                     }
 
-                    foreach (KeyValuePair<string, string> bl in AuthorList)
+                    foreach (string bl in AuthorList)
                     {
 
-                        if (bl.Key == shcode)
+                        if (bl == shcode)
                         {
                             isDup = true;
                             break;
@@ -133,10 +152,10 @@ namespace StockA
                         if (method == "km")
                         {
 
-                            //금액으로 매수
+                            //금액으로 매수                            
                             string qnt = getQnt(price, this.km.ToString());
                             this.output.Text += String.Format("{0} {1}주", shcode, qnt) + "를 매수합니다" + Environment.NewLine;
-                            string[] param = { shcode, price, qnt};
+                            string[] param = {shcode, price, qnt};
                             Thread th = new Thread(new ParameterizedThreadStart(requestact));
                             th.Start(param);
                             Thread.Sleep(100);
@@ -146,8 +165,10 @@ namespace StockA
                         else
                         {
                             //수량으로 매수
+                            /*
                             od.request(shcode, price, "2", "15");
                             this.output.Text += shcode +"를 매수합니다" + Environment.NewLine;
+                            */
                         }
                         
                     }
@@ -158,7 +179,7 @@ namespace StockA
         public void requestact(object param)
         {
             string[] data = param as string[];
-            od = new Order(this.output, this.account_number, this.account_pwd);
+            //od = new Order(this.output, this.account_number, this.account_pwd);
             od.request(data[0], data[1], "2", data[2]);
             od.end();
         }

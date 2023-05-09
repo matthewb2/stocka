@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -110,7 +112,8 @@ namespace StockA
 
 
             this.output.Text += String.Format("{0} {1} {2} {3} {4}", r1, r2, r3, r4, r5) + Environment.NewLine;
-
+            //write a bucket list
+            
             //initialization
             this.balance_sheet.Items.Clear();
 
@@ -163,6 +166,9 @@ namespace StockA
             //this.stocks.Items.Clear();
             this.stocks.Items.Clear();
 
+
+            List<string> listbucket= new List<string>();
+
             StockInfo si = new StockInfo(this.output, this.stocks);
 
             for (int i = 0; i < nCount; i++)
@@ -172,13 +178,14 @@ namespace StockA
                 s2 = t0424.GetFieldData("t0424OutBlock1", "hname", i); //종목번호
                 s3 = t0424.GetFieldData("t0424OutBlock1", "price", i); //종목번호
 
-                s4 = t0424.GetFieldData("t0424OutBlock1", "pamt", i); //평균단가
+                
                 s5 = t0424.GetFieldData("t0424OutBlock1", "janqty", i); //잔고수량
                 p1 = Int32.Parse(t0424.GetFieldData("t0424OutBlock1", "mamt", i)); //매입금액
                 p2 = Int32.Parse(t0424.GetFieldData("t0424OutBlock1", "appamt", i)); //평가금액
 
                 p3 = Int32.Parse(t0424.GetFieldData("t0424OutBlock1", "dtsunik", i)); //평가손익
                 p4 = t0424.GetFieldData("t0424OutBlock1", "sunikrt", i); //수익률
+                s4 = t0424.GetFieldData("t0424OutBlock1", "pamt", i); //평균단가
 
                 //
                 //this.output.Text += String.Format("t0424 => {0} {1} {2} {3} {4} {5} {6} {7}", s1, s2, s3, s4, s5, p1, p2, p4) + Environment.NewLine;
@@ -190,15 +197,24 @@ namespace StockA
                 this.stocks.Items[i].SubItems[0].Text = s1;
                 this.stocks.Items[i].SubItems[1].Text = s2;
                 this.stocks.Items[i].SubItems[2].Text = string.Format("{0:#,0}", Convert.ToInt32(s3));
-                this.stocks.Items[i].SubItems[3].Text = string.Format("{0:#,0}", Convert.ToInt32(s4));
-                this.stocks.Items[i].SubItems[4].Text = string.Format("{0:#,0}", Convert.ToInt32(s5));
-                this.stocks.Items[i].SubItems[5].Text = string.Format("{0:#,0}", Convert.ToInt32(p1));
-                this.stocks.Items[i].SubItems[6].Text = string.Format("{0:#,0}", Convert.ToInt32(p2));
-                this.stocks.Items[i].SubItems[7].Text = string.Format("{0:#,0}", Convert.ToInt32(p3));
-                this.stocks.Items[i].SubItems[8].Text = p4;
+                this.stocks.Items[i].SubItems[8].Text = string.Format("{0:#,0}", Convert.ToInt32(s4));
+                this.stocks.Items[i].SubItems[3].Text = string.Format("{0:#,0}", Convert.ToInt32(s5));
+                this.stocks.Items[i].SubItems[4].Text = string.Format("{0:#,0}", Convert.ToInt32(p1));
+                this.stocks.Items[i].SubItems[5].Text = string.Format("{0:#,0}", Convert.ToInt32(p2));
+                this.stocks.Items[i].SubItems[6].Text = string.Format("{0:#,0}", Convert.ToInt32(p3));
+                this.stocks.Items[i].SubItems[7].Text = p4;
                 this.stocks.Items[i].UseItemStyleForSubItems = false;
                 if (Convert.ToInt32(p3) < 0)
                 {
+                    this.stocks.Items[i].SubItems[6].ForeColor = Color.Blue;
+                }
+                else
+                {
+                    this.stocks.Items[i].SubItems[6].ForeColor = Color.Red;
+
+                }
+                if (float.Parse(p4) < 0)
+                { 
                     this.stocks.Items[i].SubItems[7].ForeColor = Color.Blue;
                 }
                 else
@@ -206,19 +222,38 @@ namespace StockA
                     this.stocks.Items[i].SubItems[7].ForeColor = Color.Red;
 
                 }
-                if (float.Parse(p4) < 0)
-                { 
-                    this.stocks.Items[i].SubItems[8].ForeColor = Color.Blue;
-                }
-                else
-                {
-                    this.stocks.Items[i].SubItems[8].ForeColor = Color.Red;
-
-                }
                 //
                 //this.stocks.Items[i].Selected = true;
+                //add to jobject   
+                listbucket.Add(s1);
+
+            }
+
+            try
+            {
+                string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+                //
+                JObject sonSpec = new JObject(
+                    new JProperty("scode", listbucket.ToArray()),
+                    new JProperty("sname", "null")
+                    );
 
 
+
+                if (!File.Exists(path + @"\bucket.json"))
+                {
+                    using (FileStream fs = File.Create(path + @"\bucket.json"))
+                    {
+                        byte[] info = new UTF8Encoding(true).GetBytes(sonSpec.ToString());
+                        fs.Write(info, 0, info.Length);
+                    }
+                }
+                else File.WriteAllText(path + @"\bucket.json", sonSpec.ToString());
+
+            }
+            catch (Exception exp)
+            {
+                Console.Write(exp.Message);
             }
             foreach (ColumnHeader column in this.stocks.Columns)
             {

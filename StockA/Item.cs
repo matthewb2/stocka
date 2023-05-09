@@ -22,5 +22,10 @@ namespace StockA
         public bool vcc2;
     }
 
+    public class Bucket
+    {
+        public string[] scode;
+        public string sname;
+    }
 
 }

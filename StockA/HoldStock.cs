@@ -46,7 +46,6 @@ namespace StockA
             /*
             이베스트 서버에서 ReceiveData 이벤트 받으면 실행되는 event handler
             */
-            this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
 
             string r1 = t0424.GetFieldData("t0424OutBlock", "sunamt", 0);  //추정순자산
             string r2 = t0424.GetFieldData("t0424OutBlock", "tappamt", 0); //평가금액
@@ -55,19 +54,13 @@ namespace StockA
             string r5 = t0424.GetFieldData("t0424OutBlock", "mamt", 0); //매입금액
 
 
-            this.output.Text += String.Format("{0} {1} {2} {3} {4}", r1, r2, r3, r4, r5) + Environment.NewLine;
-
-            
-            //
             int nCount = t0424.GetBlockCount("t0424OutBlock1");
-            
 
-            this.output.Text += String.Format("ncount: {0}", nCount) + Environment.NewLine;
+            Console.WriteLine(nCount.ToString());
+            
             string s1, s2, s3, s4, s5, p4;
-            //long s5;
             int p1, p2, p3;
             //
-            //this.stocks.Items.Clear();
             
             for (int i = 0; i < nCount; i++)
             {
@@ -83,9 +76,6 @@ namespace StockA
 
                 p3 = Int32.Parse(t0424.GetFieldData("t0424OutBlock1", "dtsunik", i)); //평가손익
                 p4 = t0424.GetFieldData("t0424OutBlock1", "sunikrt", i); //수익률
-
-                //
-                this.output.Text += String.Format("t0424 => {0} {1} {2} {3} {4} {5} {6} {7}", s1, s2, s3, s4, s5, p1, p2, p4) + Environment.NewLine;
 
 
 

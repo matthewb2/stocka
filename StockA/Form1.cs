@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -116,13 +117,14 @@ namespace StockA
             listView2.Columns.Add("종목번호");
             listView2.Columns.Add("종목명");
             listView2.Columns.Add("현재가");
-            listView2.Columns.Add("평균단가");
+            
             listView2.Columns.Add("잔고수량");
             listView2.Columns.Add("매입금액");
             listView2.Columns.Add("평가금액");
             listView2.Columns.Add("평가손익");
             listView2.Columns.Add("수익률(%)");
-            
+            listView2.Columns.Add("평균단가");
+
             listView2.Columns[0].Width = 300;
             listView2.Columns[0].TextAlign = HorizontalAlignment.Center;
 
@@ -217,9 +219,6 @@ namespace StockA
         private void XASession_Login(string szCode, string szMsg)
         {
 
-
-
-
             logtxtBox.Text += getTime()+" 로그인 okay" + Environment.NewLine;
             logged = true;
             if(!button2.Enabled)
@@ -234,8 +233,7 @@ namespace StockA
             bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
 
             //test codes here
-            //Order or = new Order(logtxtBox, accno, accpw);
-
+            
             bl.request();
             bl.end();
 
@@ -247,10 +245,12 @@ namespace StockA
         {
             if (running)
             {
+                running = false;
                 session.Logout();
                 logged = false;
                 button2.Enabled = false;
                 button1.Enabled = true;
+                button3.Enabled = false;
                 if (button1.Enabled)
                     button4.Enabled = false;
 
@@ -276,7 +276,7 @@ namespace StockA
 
         private void listView2_MouseUp(object sender, MouseEventArgs e)
         {
-            
+            //
             ListViewHitTestInfo HI = listView1.HitTest(e.Location);
             Point mousePosition = listView2.PointToClient(Control.MousePosition);
             ListViewHitTestInfo hit = listView2.HitTest(mousePosition);
@@ -320,6 +320,31 @@ namespace StockA
 
         }
 
+
+        public List<string> getBucketItem()
+        {
+
+            //보유종목리스트
+            List<string> AuthorList = new List<string>();
+            Bucket items = new Bucket();
+
+            string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+
+            using (StreamReader r = new StreamReader(path + @"\bucket.json"))
+            {
+                string json = r.ReadToEnd();
+
+                items = JsonConvert.DeserializeObject<Bucket>(json);
+                foreach (string code in items.scode)
+                {
+                    AuthorList.Add(code);
+                }
+            }
+
+
+            return AuthorList;
+        }
+
         private void button2_Click(object sender, EventArgs e)
         {
             //자동매매시작
@@ -327,7 +352,7 @@ namespace StockA
             button2.Enabled = false;
             running = true;
 
-
+            
             //실시간 조건검색 로드
             sst = new SearchSt(logtxtBox, listView2, lsc.listView1, id, accno, accpw, ordermethod, this.km);
             sst.request();
@@ -335,31 +360,12 @@ namespace StockA
 
 
 
-            foreach (ListViewItem sl in this.listView2.Items)
-            {
-                //Console.WriteLine(sl.SubItems[0].Text);
-             
-            }
-
-            string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-
-            try
-            {
-                using (StreamReader r = new StreamReader(path + @"\pref.json"))
-                {
-                    string json = r.ReadToEnd();
-                    items = JsonConvert.DeserializeObject<List<Item>>(json);
-                }
-            }
-            catch
-            {
-                logtxtBox.Text += "환경변수 불러오기를 실패했습니다" + Environment.NewLine;
-                return;
-            }
             //익절 또는 손절 조건을 만족하는 보유주식 매도
             Order od = new Order(logtxtBox, accno, accpw);
             float yield = this.profit;
             float negative = this.loss;
+
+            
             foreach (ListViewItem itemRow in this.listView2.Items)
             {
                 
@@ -376,10 +382,19 @@ namespace StockA
                 
             }
             
-
-
             // 15:15:00 전량매도
-            //SetUpTimer(new TimeSpan(15, 15, 00));
+            //SetUpTimer(new TimeSpan(14, 44, 00));
+        }
+
+        private void SomeMethodRunsAt1515()
+        {
+            //this runs at 15:15:00
+            //전량 매도
+            //MessageBox.Show("run");
+            
+            HoldStock hs = new HoldStock(logtxtBox, accno, accpw);
+            hs.request();
+            hs.end();
         }
 
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
@@ -461,17 +476,6 @@ namespace StockA
             }, null, timeToGo, Timeout.InfiniteTimeSpan);
         }
 
-        private void SomeMethodRunsAt1515()
-        {
-            //this runs at 15:15:00
-            //전량 매도
-            //MessageBox.Show("run");
-
-
-            HoldStock hs = new HoldStock(logtxtBox, accno, accpw);
-            hs.request();
-            hs.end();
-        }
     }
 
 

@@ -80,8 +80,7 @@ namespace StockA
             
             //tr요청
             int result = CSPAT00600.Request(false);
-            //MessageBox.Show(result.ToString());
-
+            
             if (result < 0)
                 MessageBox.Show("error");
         }
