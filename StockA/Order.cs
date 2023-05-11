@@ -15,13 +15,13 @@ namespace StockA
         string keyVal;
         string account_number;
         string account_pwd;
-        string method;
 
         public RichTextBox output;
 
-        public Order(RichTextBox output, string accno, string accpw) {
+        public Order(RichTextBox output, string accno, string accpw)
+        {
             this.output = output;
-            //this.method = method;
+
             CSPAT00600 = new XAQueryClass();
             CSPAT00600.ResFileName = @"C:\eBEST\xingAPI\Res\CSPAT00600.res"; //RES 파일 등록
 
@@ -33,16 +33,18 @@ namespace StockA
             this.account_pwd = accpw;
         }
 
-        void OnReceiveData(string tr_code) {
+        void OnReceiveData(string tr_code)
+        {
             /*
             이베스트 서버에서 ReceiveData 이벤트 받으면 실행되는 event handler
             */
-            
+
             int nCount = CSPAT00600.GetBlockCount("CSPAT00600OutBlock1");
 
             string rec_cnt, ord_qty, ord_price, ord_side, ord_num, ord_time;
 
-            for (int i = 0; i <= nCount; i++) {
+            for (int i = 0; i <= nCount; i++)
+            {
                 rec_cnt = CSPAT00600.GetFieldData("CSPAT00600OutBlock1", "RecCnt", i);
                 ord_qty = CSPAT00600.GetFieldData("CSPAT00600OutBlock1", "OrdQty", i); //주문수량
                 ord_price = CSPAT00600.GetFieldData("CSPAT00600OutBlock1", "OrdPrc", i); //주문가
@@ -50,22 +52,24 @@ namespace StockA
                 ord_num = CSPAT00600.GetFieldData("CSPAT00600OutBlock2", "OrdNo", i); //주문번호
                 ord_time = CSPAT00600.GetFieldData("CSPAT00600OutBlock2", "OrdNo", i); //주문시각
 
-                this.output.Text += String.Format("주문번호 => {0} {1}:{2}:{3} {4} 주문이 접수되었습니다",ord_num, ord_time.Substring(0,2), ord_time.Substring(2, 4), ord_time.Substring(4, 6), ord_side) + Environment.NewLine;
+                this.output.Text += String.Format("주문번호 => {0} {1}:{2}:{3} {4} 주문이 접수되었습니다", ord_num, ord_time.Substring(0, 2), ord_time.Substring(2, 4), ord_time.Substring(4, 6), ord_side) + Environment.NewLine;
 
             }
-            if (nCount == 0) 
+            if (nCount == 0)
                 Console.WriteLine("error:{ 'message':'order failed'}");
-            
-         }
-        public void end() {
+
+        }
+        public void end()
+        {
             CSPAT00600.RemoveService("CSPAT00600", this.keyVal);
         }
 
-        public void request(string code, string price, string sorb, string qty) {
+        public void request(string code, string price, string sorb, string qty)
+        {
             /*
             이베스트 서버에 일회성 TR data 요청함.
             */
-            
+
             CSPAT00600.SetFieldData("CSPAT00600InBlock1", "AcntNo", 0, this.account_number);
             CSPAT00600.SetFieldData("CSPAT00600InBlock1", "InptPwd", 0, this.account_pwd);
             CSPAT00600.SetFieldData("CSPAT00600InBlock1", "IsuNo", 0, code);
@@ -77,10 +81,11 @@ namespace StockA
             CSPAT00600.SetFieldData("CSPAT00600InBlock1", "LoanDt", 0, "0"); //대출일
             CSPAT00600.SetFieldData("CSPAT00600InBlock1", "OrdCndiTpCode", 0, "0"); //주문조건구분
 
-            
+
             //tr요청
             int result = CSPAT00600.Request(false);
-            
+            //MessageBox.Show(result.ToString());
+
             if (result < 0)
                 MessageBox.Show("error");
         }

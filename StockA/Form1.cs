@@ -354,31 +354,30 @@ namespace StockA
 
             
             //실시간 조건검색 로드
-            sst = new SearchSt(logtxtBox, listView2, lsc.listView1, id, accno, accpw, ordermethod, this.km);
+            sst = new SearchSt(logtxtBox, listView2, id, accno, accpw);
             sst.request();
             sst.end();
 
-
-
+            
+            //need another method
             //익절 또는 손절 조건을 만족하는 보유주식 매도
-            Order od = new Order(logtxtBox, accno, accpw);
+            
             float yield = this.profit;
             float negative = this.loss;
 
-            
+            logtxtBox.Text += String.Format("{0} {1}", yield, negative) + Environment.NewLine;
+
             foreach (ListViewItem itemRow in this.listView2.Items)
             {
-                
-                
-                float ret = float.Parse(itemRow.SubItems[8].Text, CultureInfo.InvariantCulture.NumberFormat);
-                
-                if (ret > yield || ret< negative)
+                float ret = float.Parse(itemRow.SubItems[7].Text, CultureInfo.InvariantCulture.NumberFormat);
+                logtxtBox.Text += String.Format("{0}", ret) + Environment.NewLine;
+                if (ret > 5 || ret< -10)
                 {
-                    logtxtBox.Text += String.Format("{0} {1} {2}",itemRow.SubItems[0].Text, itemRow.SubItems[2].Text, itemRow.SubItems[4].Text) + Environment.NewLine;
-
-                    od.request(itemRow.SubItems[0].Text, itemRow.SubItems[2].Text.Replace(",", ""), "1", itemRow.SubItems[4].Text);
+                    logtxtBox.Text += String.Format("{0} {1} {2}",itemRow.SubItems[0].Text, itemRow.SubItems[2].Text, itemRow.SubItems[3].Text) + Environment.NewLine;
+                    Order od = new Order(logtxtBox, accno, accpw);
+                    od.request(itemRow.SubItems[0].Text, itemRow.SubItems[2].Text.Replace(",", ""), "1", itemRow.SubItems[3].Text.Replace(",", ""));
+                    od.end();
                 }
-                
                 
             }
             
@@ -424,6 +423,11 @@ namespace StockA
             }
                 
             
+        }
+
+        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
+        {
+
         }
 
         private void 정보ToolStripMenuItem1_Click(object sender, EventArgs e)

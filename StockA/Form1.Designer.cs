@@ -157,7 +157,6 @@ namespace StockA
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 24);
             this.splitContainer1.Margin = new System.Windows.Forms.Padding(10);
             this.splitContainer1.Name = "splitContainer1";
@@ -172,8 +171,9 @@ namespace StockA
             this.splitContainer1.Panel2.Controls.Add(this.logtxtBox);
             this.splitContainer1.Panel2.Margin = new System.Windows.Forms.Padding(3);
             this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(5);
-            this.splitContainer1.Size = new System.Drawing.Size(1053, 515);
-            this.splitContainer1.SplitterDistance = 310;
+            this.splitContainer1.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel2_Paint);
+            this.splitContainer1.Size = new System.Drawing.Size(1053, 584);
+            this.splitContainer1.SplitterDistance = 358;
             this.splitContainer1.TabIndex = 1;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
             // 
@@ -198,7 +198,7 @@ namespace StockA
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
-            this.splitContainer2.Size = new System.Drawing.Size(1053, 310);
+            this.splitContainer2.Size = new System.Drawing.Size(1053, 358);
             this.splitContainer2.SplitterDistance = 240;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -378,8 +378,8 @@ namespace StockA
             // 
             this.splitContainer3.Panel2.Controls.Add(this.listView2);
             this.splitContainer3.Panel2.Padding = new System.Windows.Forms.Padding(5);
-            this.splitContainer3.Size = new System.Drawing.Size(809, 310);
-            this.splitContainer3.SplitterDistance = 88;
+            this.splitContainer3.Size = new System.Drawing.Size(809, 358);
+            this.splitContainer3.SplitterDistance = 103;
             this.splitContainer3.TabIndex = 0;
             // 
             // listView1
@@ -390,7 +390,7 @@ namespace StockA
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(5, 5);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(799, 78);
+            this.listView1.Size = new System.Drawing.Size(799, 93);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             // 
@@ -402,7 +402,7 @@ namespace StockA
             this.listView2.HideSelection = false;
             this.listView2.Location = new System.Drawing.Point(5, 5);
             this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(799, 208);
+            this.listView2.Size = new System.Drawing.Size(799, 241);
             this.listView2.TabIndex = 1;
             this.listView2.UseCompatibleStateImageBehavior = false;
             this.listView2.SelectedIndexChanged += new System.EventHandler(this.listView2_SelectedIndexChanged);
@@ -415,7 +415,7 @@ namespace StockA
             this.logtxtBox.Margin = new System.Windows.Forms.Padding(5);
             this.logtxtBox.Name = "logtxtBox";
             this.logtxtBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.logtxtBox.Size = new System.Drawing.Size(1043, 191);
+            this.logtxtBox.Size = new System.Drawing.Size(1043, 212);
             this.logtxtBox.TabIndex = 0;
             this.logtxtBox.Text = "";
             // 
@@ -423,7 +423,7 @@ namespace StockA
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1053, 539);
+            this.ClientSize = new System.Drawing.Size(1053, 608);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

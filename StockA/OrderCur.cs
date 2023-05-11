@@ -71,12 +71,12 @@ namespace StockA
             
             //
             int nCount = t0425.GetBlockCount("t0425OutBlock1");
-            string ord_no, ord_code, ord_name, ord_side, org_qty, ord_price, done_price, done_qty;
+            string ord_no, ord_code, ord_name, ord_side, org_qty, ord_price, done_price, done_qty,ord_time;
             
             listView1.Items.Clear();
 
             for (int i = 0; i < nCount; i++) {
-                var row1 = new ListViewItem(new[] { "", "", "", "", "", "" });
+                var row1 = new ListViewItem(new[] { "", "", "", "", "", "","" });
                 listView1.Items.Add(row1);
 
 
@@ -88,6 +88,9 @@ namespace StockA
                 ord_price = t0425.GetFieldData("t0425OutBlock1", "price", i); //주문가격
                 done_price = t0425.GetFieldData("t0425OutBlock1", "cheprice", i); //주문가격
                 done_qty = t0425.GetFieldData("t0425OutBlock1", "cheqty", i); //체결수량
+                ord_time = t0425.GetFieldData("t0425OutBlock1", "ordtime", i); //주문시각
+                
+                ord_time = ord_time.Substring(0, 2)+":"+ ord_time.Substring(2, 2)+":"+ord_time.Substring(4, 2);
 
                 listView1.Items[i].SubItems[0].Text = string.Format(ord_no);
                 listView1.Items[i].SubItems[1].Text = string.Format("{0:0,0}", ord_code);
@@ -95,6 +98,8 @@ namespace StockA
                 listView1.Items[i].SubItems[3].Text = string.Format(ord_side);
                 listView1.Items[i].SubItems[4].Text = string.Format("{0:0,0}", done_qty);
                 listView1.Items[i].SubItems[5].Text = string.Format("{0:0,0}", org_qty);
+                listView1.Items[i].SubItems[6].Text = ord_time;
+
                 listView1.Items[i].UseItemStyleForSubItems = false;
                 if (ord_side == "매도")
                 {

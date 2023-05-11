@@ -26,6 +26,7 @@ namespace StockA
             listView1.Columns.Add("구분");
             listView1.Columns.Add("체결수량");
             listView1.Columns.Add("주문수량");
+            listView1.Columns.Add("주문시각");
 
             listView1.Columns[0].Width = 300;
             listView1.Columns[0].TextAlign = HorizontalAlignment.Center;
@@ -83,6 +84,16 @@ namespace StockA
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+
+        }
+
+        private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
+        {
 
         }
     }
