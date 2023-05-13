@@ -43,7 +43,7 @@ namespace StockA
             int rowindex = hit.Item.Index;
             string code = listView1.Items[rowindex].SubItems[0].Text;
             string price = listView1.Items[rowindex].SubItems[2].Text;
-            string qty = listView1.Items[rowindex].SubItems[4].Text;
+            string qty = listView1.Items[rowindex].SubItems[3].Text;
             price = price.Replace(",", "");
             qty = qty.Replace(",", "");
 

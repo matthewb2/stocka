@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,14 +51,20 @@ namespace StockA
             LV.SmallImageList = imgList;
         }
 
-        public List<string> getBucketItem()
+        public string[] getBucketItem()
         {
-            List<string> AuthorList = new List<string>();
-            foreach (ListViewItem sl in this.bucket.Items)
-            {   
-                AuthorList.Add(sl.SubItems[0].Text);
+            Bucket AuthorList = new Bucket();
+            string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+
+            using (StreamReader r = new StreamReader(path + @"\bucket.json"))
+            {
+                string json = r.ReadToEnd();
+                AuthorList = JsonConvert.DeserializeObject<Bucket>(json);
             }
-            return AuthorList;
+            //조건식 로드
+            string[] st = AuthorList.scode;
+            
+            return st;
         }
         private void OnReceiveData(string tr_code)
         {
@@ -71,7 +79,7 @@ namespace StockA
             this.output.Text += String.Format("API Key =>  {0}", this.keyVal) + Environment.NewLine;
 
             int nCount = Convert.ToInt32(r1);
-
+            //Console.WriteLine(nCount);
             getBucketItem();
             
             string shcode, hname, price;
@@ -86,7 +94,7 @@ namespace StockA
 
                     //check if the stock exist in a bucket
                     // 보유종목 리스트에 있으면 제외
-                    List<string> bucketItem = getBucketItem();
+                    string[] bucketItem = getBucketItem();
                     bool isBucket = false;
 
                     foreach (string bl in bucketItem)
@@ -95,6 +103,9 @@ namespace StockA
                         if (shcode == bl)
                         {
                             isBucket = true;
+                            //Console.WriteLine(shcode);
+                            this.output.Text += String.Format("{0}", shcode) + Environment.NewLine;
+
                             break;
                         }
 
@@ -104,11 +115,11 @@ namespace StockA
                     //order it
                     if (!isBucket)
                     {
-                        Order od = new Order(this.output, this.account_number, this.account_pwd);
-                        Console.WriteLine(shcode);
-                        od.request(shcode, price, "2", "15");
-                        this.output.Text += shcode + Environment.NewLine;
-                        od.end();
+                        //Order od = new Order(this.output, this.account_number, this.account_pwd);
+                        //Console.WriteLine(shcode);
+                        //od.request(shcode, price, "2", "15");
+                        //this.output.Text += shcode + Environment.NewLine;
+                        //od.end();
 
                     }
                 }

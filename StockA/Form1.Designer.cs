@@ -193,7 +193,7 @@ namespace StockA
             this.splitContainer2.Panel1.Controls.Add(this.button1);
             this.splitContainer2.Panel1.Controls.Add(this.groupBox2);
             this.splitContainer2.Panel1.Controls.Add(this.groupBox1);
-            this.splitContainer2.Panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer2_Panel1_Paint);
+            
             // 
             // splitContainer2.Panel2
             // 
@@ -372,7 +372,7 @@ namespace StockA
             // 
             this.splitContainer3.Panel1.Controls.Add(this.listView1);
             this.splitContainer3.Panel1.Padding = new System.Windows.Forms.Padding(5);
-            this.splitContainer3.Panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer3_Panel1_Paint);
+            
             // 
             // splitContainer3.Panel2
             // 
