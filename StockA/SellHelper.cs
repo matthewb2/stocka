@@ -46,7 +46,7 @@ namespace StockA
             string qty = listView1.Items[rowindex].SubItems[3].Text;
             price = price.Replace(",", "");
             qty = qty.Replace(",", "");
-
+            //
             this.logtextBox.Text += code + Environment.NewLine;
             
 

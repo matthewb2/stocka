@@ -39,25 +39,14 @@ namespace StockA
             이베스트 서버에서 ReceiveData 이벤트 받으면 실행되는 event handler
             */
 
-            int nCount = CSPAT00600.GetBlockCount("CSPAT00600OutBlock1");
+            string ord_num, ord_time;
+            
+            ord_num = CSPAT00600.GetFieldData("CSPAT00600OutBlock2", "OrdNo", 0); //주문번호
+            //ord_time = CSPAT00600.GetFieldData("CSPAT00600OutBlock2", "OrdTime", 0);
 
-            string rec_cnt, ord_qty, ord_price, ord_side, ord_num, ord_time;
-
-            for (int i = 0; i <= nCount; i++)
-            {
-                rec_cnt = CSPAT00600.GetFieldData("CSPAT00600OutBlock1", "RecCnt", i);
-                ord_qty = CSPAT00600.GetFieldData("CSPAT00600OutBlock1", "OrdQty", i); //주문수량
-                ord_price = CSPAT00600.GetFieldData("CSPAT00600OutBlock1", "OrdPrc", i); //주문가
-                ord_side = CSPAT00600.GetFieldData("CSPAT00600OutBlock1", "BnsTpCode", i); //매매구분
-                ord_num = CSPAT00600.GetFieldData("CSPAT00600OutBlock2", "OrdNo", i); //주문번호
-                ord_time = CSPAT00600.GetFieldData("CSPAT00600OutBlock2", "OrdNo", i); //주문시각
-
-                this.output.Text += String.Format("주문번호 => {0} {1}:{2}:{3} {4} 주문이 접수되었습니다", ord_num, ord_time.Substring(0, 2), ord_time.Substring(2, 4), ord_time.Substring(4, 6), ord_side) + Environment.NewLine;
-
-            }
-            if (nCount == 0)
-                Console.WriteLine("error:{ 'message':'order failed'}");
-
+            this.output.Text += String.Format("주문번호 => {0} 주문이 접수되었습니다", ord_num ) + Environment.NewLine;
+           
+            
         }
         public void end()
         {

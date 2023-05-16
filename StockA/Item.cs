@@ -25,7 +25,8 @@ namespace StockA
     public class Bucket
     {
         public string[] scode;
-        public string sname;
+        public string[] sret;
+        public string[] sqnt;
     }
 
 }

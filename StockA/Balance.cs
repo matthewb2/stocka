@@ -167,7 +167,9 @@ namespace StockA
             this.stocks.Items.Clear();
 
 
-            List<string> listbucket= new List<string>();
+            List<string> listScode= new List<string>();
+            List<string> listRate = new List<string>();
+            List<string> listQnt = new List<string>();
 
             StockInfo si = new StockInfo(this.output, this.stocks);
 
@@ -225,7 +227,9 @@ namespace StockA
                 //
                 //this.stocks.Items[i].Selected = true;
                 //add to jobject   
-                listbucket.Add(s1);
+                listScode.Add(s1);
+                listRate.Add(p4);
+                listQnt.Add(s5);
 
             }
 
@@ -234,8 +238,9 @@ namespace StockA
                 string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
                 //
                 JObject sonSpec = new JObject(
-                    new JProperty("scode", listbucket.ToArray()),
-                    new JProperty("sname", "null")
+                    new JProperty("scode", listScode.ToArray()),
+                    new JProperty("sret", listRate.ToArray()),
+                    new JProperty("sqnt", listQnt.ToArray())
                     );
 
 

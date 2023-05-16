@@ -25,7 +25,7 @@ namespace StockA
         public static bool logged = false;
         public static bool running = false;
 
-        public List<Item> items;
+        public Item items;
         public static string id;
         string password, accno, accpw;
         
@@ -48,18 +48,19 @@ namespace StockA
 
             //환경변수 로드
             string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-
+            items = new Item();
             using (StreamReader r = new StreamReader(path + @"\pref.json"))
             {
                 string json = r.ReadToEnd();
-                items = JsonConvert.DeserializeObject<List<Item>>(json);
+                items = JsonConvert.DeserializeObject<Item>(json);
+                this.ordermethod = items.method;
+                this.km = items.km;
+
             }
-            
+
             //조건식 로드
-            this.profit = items[0].profitrate;
-            this.loss = items[0].lossrate;
-            this.ordermethod = items[0].method;
-            this.km = items[0].km;
+            //this.profit = items.profitrate;
+            //this.loss = items.lossrate;
 
             logtxtBox.Text += this.ordermethod + Environment.NewLine;
             logtxtBox.Text += this.km + Environment.NewLine;
@@ -75,7 +76,7 @@ namespace StockA
             textBox4.Text = "";
             textBox2.Text = "";
             textBox6.Text = "";
-            textBox5.Text = "";
+            textBox5.Text = "0000";
             checkBox1.Checked = true;
             button2.Enabled = false;
             button3.Enabled = false;
@@ -189,6 +190,20 @@ namespace StockA
         }
 
 
+        public Bucket getBucketItem()
+        {
+            Bucket AuthorList = new Bucket();
+            string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+
+            using (StreamReader r = new StreamReader(path + @"\bucket.json"))
+            {
+                string json = r.ReadToEnd();
+                AuthorList = JsonConvert.DeserializeObject<Bucket>(json);
+            }
+
+            return AuthorList;
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             id = textBox4.Text;
@@ -234,6 +249,8 @@ namespace StockA
             bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
             bl.request();
             bl.end();
+
+            
 
 
         }
@@ -296,7 +313,7 @@ namespace StockA
             {
                 qo.textBox3.Text = listView2.Items[rowindex].SubItems[1].Text;
                 qo.textBox1.Text = listView2.Items[rowindex].SubItems[2].Text;
-                qo.textBox2.Text = listView2.Items[rowindex].SubItems[4].Text;
+                qo.textBox2.Text = listView2.Items[rowindex].SubItems[3].Text;
                 qo.textBox4.Text = listView2.Items[rowindex].SubItems[0].Text;
 
             }
@@ -317,36 +334,88 @@ namespace StockA
 
             
             //실시간 조건검색 로드
+            /*
             sst = new SearchSt(logtxtBox, listView2, id, accno, accpw);
             sst.request();
             sst.end();
-
+            */
             
             //need another method
             //익절 또는 손절 조건을 만족하는 보유주식 매도
-            /*
+            
             float yield = this.profit;
             float negative = this.loss;
 
-            logtxtBox.Text += String.Format("{0} {1}", yield, negative) + Environment.NewLine;
+            //logtxtBox.Text += String.Format("{0} {1}", yield, negative) + Environment.NewLine;
 
+            
+
+            /*
             foreach (ListViewItem itemRow in this.listView2.Items)
             {
                 float ret = float.Parse(itemRow.SubItems[7].Text, CultureInfo.InvariantCulture.NumberFormat);
                 //logtxtBox.Text += String.Format("{0}", ret) + Environment.NewLine;
-                if (ret > 5 || ret< -10)
+                if (ret > 5 || ret< -8)
                 {
                     logtxtBox.Text += String.Format("{0}", ret) + Environment.NewLine;
+                    string scode = itemRow.SubItems[0].Text;
+                    
+                    string qnt = itemRow.SubItems[3].Text.Replace(",", "");
+                    string price = itemRow.SubItems[2].Text.Replace(",", "");
                     logtxtBox.Text += String.Format("{0} {1} {2}",itemRow.SubItems[0].Text, itemRow.SubItems[2].Text.Replace(",", ""), itemRow.SubItems[3].Text.Replace(",", "")) + Environment.NewLine;
                     Order od = new Order(logtxtBox, accno, accpw);
-                    od.request(itemRow.SubItems[0].Text, itemRow.SubItems[2].Text.Replace(",", ""), "1", itemRow.SubItems[3].Text.Replace(",", ""));
-                    od.end();
+                    var t = new Thread(() => RealStart(od, scode, price, qnt));
+                    t.Start();
+                    t.Join();
+                    Thread.Sleep(1000);
+                    
                 }
                 
             }
             */
+            /*
+            for (int i=0; i<2; i++)
+            {
+                Order od = new Order(logtxtBox, accno, accpw);
+                var t = new Thread(() => RealStart(od, "005745", "10440", "1"));
+                t.Start();
+                
+            }
+            */
+            //
+            Bucket bucketItem = getBucketItem();
+
+
+            for (int j = 0; j < bucketItem.scode.Length; j++)
+            {
+
+                float ret = float.Parse(bucketItem.sret[j]);
+
+                if (ret > 5.0 || ret < -10.0)
+                {
+
+                    //logtxtBox.Text += String.Format("{0}", bucketItem.sname[j]) + Environment.NewLine;
+                    Order od = new Order(logtxtBox, accno, accpw);
+                    var t = new Thread(() => RealStart(od, bucketItem.scode[j], bucketItem.sret[j], bucketItem.sqnt[j]));
+                    t.Start();
+
+
+                }
+
+            }
+
+
             // 15:15:00 전량매도
             //SetUpTimer(new TimeSpan(14, 44, 00));
+        }
+
+        private static void RealStart(Order od, string scode, string price, string qnt)
+        {
+            od.request(scode, price, "1", qnt);
+            Thread.Sleep(1000);
+            Console.WriteLine(scode);
+            od.end();
+            
         }
 
         private void SomeMethodRunsAt1515()

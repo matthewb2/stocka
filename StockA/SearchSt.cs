@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XA_DATASETLib;
@@ -51,7 +52,7 @@ namespace StockA
             LV.SmallImageList = imgList;
         }
 
-        public string[] getBucketItem()
+        public Bucket getBucketItem()
         {
             Bucket AuthorList = new Bucket();
             string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
@@ -61,10 +62,8 @@ namespace StockA
                 string json = r.ReadToEnd();
                 AuthorList = JsonConvert.DeserializeObject<Bucket>(json);
             }
-            //조건식 로드
-            string[] st = AuthorList.scode;
             
-            return st;
+            return AuthorList;
         }
         private void OnReceiveData(string tr_code)
         {
@@ -94,17 +93,18 @@ namespace StockA
 
                     //check if the stock exist in a bucket
                     // 보유종목 리스트에 있으면 제외
-                    string[] bucketItem = getBucketItem();
+                    Bucket bucketItem = getBucketItem();
                     bool isBucket = false;
 
-                    foreach (string bl in bucketItem)
+                    
+                    for(int j=0; j<bucketItem.scode.Length; j++)
                     {
 
-                        if (shcode == bl)
+                        if (shcode == bucketItem.scode[j])
                         {
                             isBucket = true;
-                            //Console.WriteLine(shcode);
-                            this.output.Text += String.Format("{0}", shcode) + Environment.NewLine;
+                            
+                            this.output.Text += String.Format("{0}", bucketItem.sret[j]) + Environment.NewLine;
 
                             break;
                         }
@@ -115,11 +115,12 @@ namespace StockA
                     //order it
                     if (!isBucket)
                     {
-                        //Order od = new Order(this.output, this.account_number, this.account_pwd);
+                        Order od = new Order(this.output, this.account_number, this.account_pwd);
                         //Console.WriteLine(shcode);
-                        //od.request(shcode, price, "2", "15");
-                        //this.output.Text += shcode + Environment.NewLine;
-                        //od.end();
+                        od.request(shcode, price, "2", "15");
+                        this.output.Text += String.Format("{0}를 매수합니다", shcode) + Environment.NewLine;
+                        Thread.Sleep(200);
+                        od.end();
 
                     }
                 }
