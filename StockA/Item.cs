@@ -27,6 +27,7 @@ namespace StockA
         public string[] scode;
         public string[] sret;
         public string[] sqnt;
+        public string[] sprice;
     }
 
 }

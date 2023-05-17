@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using XA_DATASETLib;
 using XA_SESSIONLib;
+using System.Net;
+using System.Timers;
 
 namespace StockA
 {
@@ -37,13 +39,19 @@ namespace StockA
 
         public string ordermethod;
         Balance bl;
-        private System.Threading.Timer timer;
 
         
+
         public Form1()
         {
             InitializeComponent();
-            
+
+
+            // 타이머 생성 및 시작
+            System.Timers.Timer timer = new System.Timers.Timer();
+            timer.Interval = 60 * 1000; // 1분
+            timer.Elapsed += new ElapsedEventHandler(timer_Elapsed);
+            timer.Start();
 
 
             //환경변수 로드
@@ -152,6 +160,7 @@ namespace StockA
 
         }
 
+        
         public string getQnt(string price, string notes)
         {
             int qn = Convert.ToInt32(notes) / Convert.ToInt32(price);
@@ -174,10 +183,6 @@ namespace StockA
             pw.Show();
         }
 
-        private void 주문ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-         
-        }
         private void 도움말ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             
@@ -250,9 +255,6 @@ namespace StockA
             bl.request();
             bl.end();
 
-            
-
-
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -281,12 +283,6 @@ namespace StockA
             }
 
         }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
 
         private void listView2_MouseUp(object sender, MouseEventArgs e)
         {
@@ -325,68 +321,15 @@ namespace StockA
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void sellBucket()
         {
-            //자동매매시작
-            button3.Enabled = true;
-            button2.Enabled = false;
-            running = true;
-
-            
-            //실시간 조건검색 로드
-            /*
-            sst = new SearchSt(logtxtBox, listView2, id, accno, accpw);
-            sst.request();
-            sst.end();
-            */
-            
-            //need another method
-            //익절 또는 손절 조건을 만족하는 보유주식 매도
-            
             float yield = this.profit;
             float negative = this.loss;
 
-            //logtxtBox.Text += String.Format("{0} {1}", yield, negative) + Environment.NewLine;
-
-            
-
-            /*
-            foreach (ListViewItem itemRow in this.listView2.Items)
-            {
-                float ret = float.Parse(itemRow.SubItems[7].Text, CultureInfo.InvariantCulture.NumberFormat);
-                //logtxtBox.Text += String.Format("{0}", ret) + Environment.NewLine;
-                if (ret > 5 || ret< -8)
-                {
-                    logtxtBox.Text += String.Format("{0}", ret) + Environment.NewLine;
-                    string scode = itemRow.SubItems[0].Text;
-                    
-                    string qnt = itemRow.SubItems[3].Text.Replace(",", "");
-                    string price = itemRow.SubItems[2].Text.Replace(",", "");
-                    logtxtBox.Text += String.Format("{0} {1} {2}",itemRow.SubItems[0].Text, itemRow.SubItems[2].Text.Replace(",", ""), itemRow.SubItems[3].Text.Replace(",", "")) + Environment.NewLine;
-                    Order od = new Order(logtxtBox, accno, accpw);
-                    var t = new Thread(() => RealStart(od, scode, price, qnt));
-                    t.Start();
-                    t.Join();
-                    Thread.Sleep(1000);
-                    
-                }
-                
-            }
-            */
-            /*
-            for (int i=0; i<2; i++)
-            {
-                Order od = new Order(logtxtBox, accno, accpw);
-                var t = new Thread(() => RealStart(od, "005745", "10440", "1"));
-                t.Start();
-                
-            }
-            */
             //
             Bucket bucketItem = getBucketItem();
 
-
-            for (int j = 0; j < bucketItem.scode.Length; j++)
+            for (int j = 0; j < bucketItem.scode.Length - 1; j++)
             {
 
                 float ret = float.Parse(bucketItem.sret[j]);
@@ -394,20 +337,74 @@ namespace StockA
                 if (ret > 5.0 || ret < -10.0)
                 {
 
-                    //logtxtBox.Text += String.Format("{0}", bucketItem.sname[j]) + Environment.NewLine;
+                    logtxtBox.Text += String.Format("{0} {1} {2}", bucketItem.scode[j], bucketItem.sret[j], bucketItem.sqnt[j]) + Environment.NewLine;
+                    //Console.WriteLine(j);
                     Order od = new Order(logtxtBox, accno, accpw);
-                    var t = new Thread(() => RealStart(od, bucketItem.scode[j], bucketItem.sret[j], bucketItem.sqnt[j]));
+                    var t = new Thread(() => RealStart(od, bucketItem.scode[j], bucketItem.sprice[j], bucketItem.sqnt[j]));
                     t.Start();
 
 
                 }
 
             }
-
-
-            // 15:15:00 전량매도
-            //SetUpTimer(new TimeSpan(14, 44, 00));
         }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //자동매매시작
+            button3.Enabled = true;
+            button2.Enabled = false;
+            running = true;
+
+
+
+            //익절 또는 손절 조건을 만족하는 보유주식 매도
+            sellBucket();
+
+
+            //실시간 조건검색 로드
+            sst = new SearchSt(logtxtBox, listView2, id, accno, accpw);
+            sst.request();
+            sst.end();
+
+            //보유종목리스트를 갱신
+            bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
+            bl.request();
+            bl.end();
+
+
+            // 타이머 생성 및 시작
+            System.Timers.Timer timer = new System.Timers.Timer();
+            timer.Interval = 60 * 1000; // 1분
+            timer.Elapsed += new ElapsedEventHandler(timer_Elapsed);
+            timer.Start();
+
+
+
+        }
+
+        // 쓰레드풀의 작업쓰레드가 지정된 시간 간격으로
+        // 아래 이벤트 핸들러 실행
+        private void timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Console.WriteLine("timer");
+            /*
+            //익절 또는 손절 조건을 만족하는 보유주식 매도
+            sellBucket();
+
+
+            //실시간 조건검색 로드
+            sst = new SearchSt(logtxtBox, listView2, id, accno, accpw);
+            sst.request();
+            sst.end();
+
+            //보유종목리스트를 갱신
+            bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
+            bl.request();
+            bl.end();
+            */
+        }
+
+
 
         private static void RealStart(Order od, string scode, string price, string qnt)
         {
@@ -418,18 +415,6 @@ namespace StockA
             
         }
 
-        private void SomeMethodRunsAt1515()
-        {
-            //this runs at 15:15:00
-            //전량 매도
-            //MessageBox.Show("run");
-            
-        }
-
-        private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
-        {
-            
-        }
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -496,19 +481,6 @@ namespace StockA
             else MessageBox.Show("로그인이 필요합니다");
         }
 
-        private void SetUpTimer(TimeSpan alertTime)
-        {
-            DateTime current = DateTime.Now;
-            TimeSpan timeToGo = alertTime - current.TimeOfDay;
-            if (timeToGo < TimeSpan.Zero)
-            {
-                return;//time already passed
-            }
-            this.timer = new System.Threading.Timer(x =>
-            {
-                this.SomeMethodRunsAt1515();
-            }, null, timeToGo, Timeout.InfiniteTimeSpan);
-        }
 
     }
 

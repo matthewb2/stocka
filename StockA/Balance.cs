@@ -170,6 +170,7 @@ namespace StockA
             List<string> listScode= new List<string>();
             List<string> listRate = new List<string>();
             List<string> listQnt = new List<string>();
+            List<string> listPrice = new List<string>();
 
             StockInfo si = new StockInfo(this.output, this.stocks);
 
@@ -178,7 +179,7 @@ namespace StockA
                 s1 = t0424.GetFieldData("t0424OutBlock1", "expcode", i); //종목번호
 
                 s2 = t0424.GetFieldData("t0424OutBlock1", "hname", i); //종목번호
-                s3 = t0424.GetFieldData("t0424OutBlock1", "price", i); //종목번호
+                s3 = t0424.GetFieldData("t0424OutBlock1", "price", i); //현재가
 
                 
                 s5 = t0424.GetFieldData("t0424OutBlock1", "janqty", i); //잔고수량
@@ -230,6 +231,7 @@ namespace StockA
                 listScode.Add(s1);
                 listRate.Add(p4);
                 listQnt.Add(s5);
+                listPrice.Add(s3);
 
             }
 
@@ -240,7 +242,8 @@ namespace StockA
                 JObject sonSpec = new JObject(
                     new JProperty("scode", listScode.ToArray()),
                     new JProperty("sret", listRate.ToArray()),
-                    new JProperty("sqnt", listQnt.ToArray())
+                    new JProperty("sqnt", listQnt.ToArray()),
+                    new JProperty("sprice", listPrice.ToArray())
                     );
 
 

@@ -116,9 +116,7 @@ namespace StockA
                     if (!isBucket)
                     {
                         Order od = new Order(this.output, this.account_number, this.account_pwd);
-                        //Console.WriteLine(shcode);
                         od.request(shcode, price, "2", "15");
-                        this.output.Text += String.Format("{0}를 매수합니다", shcode) + Environment.NewLine;
                         Thread.Sleep(200);
                         od.end();
 

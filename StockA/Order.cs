@@ -39,7 +39,7 @@ namespace StockA
             이베스트 서버에서 ReceiveData 이벤트 받으면 실행되는 event handler
             */
 
-            string ord_num, ord_time;
+            string ord_num;
             
             ord_num = CSPAT00600.GetFieldData("CSPAT00600OutBlock2", "OrdNo", 0); //주문번호
             //ord_time = CSPAT00600.GetFieldData("CSPAT00600OutBlock2", "OrdTime", 0);
