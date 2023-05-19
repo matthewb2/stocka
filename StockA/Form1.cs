@@ -27,6 +27,8 @@ namespace StockA
         public static bool logged = false;
         public static bool running = false;
 
+        static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
+
         public Item items;
         public static string id;
         string password, accno, accpw;
@@ -40,20 +42,15 @@ namespace StockA
         public string ordermethod;
         Balance bl;
 
-        
 
+
+        
         public Form1()
         {
             InitializeComponent();
 
 
-            // 타이머 생성 및 시작
-            System.Timers.Timer timer = new System.Timers.Timer();
-            timer.Interval = 60 * 1000; // 1분
-            timer.Elapsed += new ElapsedEventHandler(timer_Elapsed);
-            timer.Start();
-
-
+            
             //환경변수 로드
             string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
             items = new Item();
@@ -334,10 +331,10 @@ namespace StockA
 
                 float ret = float.Parse(bucketItem.sret[j]);
 
-                if (ret > 5.0 || ret < -10.0)
+                if (ret > 5.0 || ret < -8)
                 {
 
-                    logtxtBox.Text += String.Format("{0} {1} {2}", bucketItem.scode[j], bucketItem.sret[j], bucketItem.sqnt[j]) + Environment.NewLine;
+                    //logtxtBox.Text += String.Format("{0} {1} {2}", bucketItem.scode[j], bucketItem.sret[j], bucketItem.sqnt[j]) + Environment.NewLine;
                     //Console.WriteLine(j);
                     Order od = new Order(logtxtBox, accno, accpw);
                     var t = new Thread(() => RealStart(od, bucketItem.scode[j], bucketItem.sprice[j], bucketItem.sqnt[j]));
@@ -371,40 +368,44 @@ namespace StockA
             bl.request();
             bl.end();
 
-
             // 타이머 생성 및 시작
-            System.Timers.Timer timer = new System.Timers.Timer();
-            timer.Interval = 60 * 1000; // 1분
-            timer.Elapsed += new ElapsedEventHandler(timer_Elapsed);
-            timer.Start();
+            myTimer.Tick += new EventHandler(TimerEventProcessor);
+
+            // Sets the timer interval to 5 seconds.
+            myTimer.Interval = 1000 * 60;
+            myTimer.Start();
 
 
 
         }
 
-        // 쓰레드풀의 작업쓰레드가 지정된 시간 간격으로
-        // 아래 이벤트 핸들러 실행
-        private void timer_Elapsed(object sender, ElapsedEventArgs e)
+        // This is the method to run when the timer is raised.
+        private void TimerEventProcessor(Object myObject,
+                                                EventArgs myEventArgs)
         {
+            //myTimer.Stop();
+
+            // Displays a message box asking whether to continue running the timer.
+            //MessageBox.Show("Continue running");
+
             Console.WriteLine("timer");
-            /*
+
             //익절 또는 손절 조건을 만족하는 보유주식 매도
             sellBucket();
+            
 
-
-            //실시간 조건검색 로드
+            //load real time search list
             sst = new SearchSt(logtxtBox, listView2, id, accno, accpw);
             sst.request();
             sst.end();
-
-            //보유종목리스트를 갱신
+            
+            //refesh the bucket list
             bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
             bl.request();
             bl.end();
-            */
         }
 
-
+        
 
         private static void RealStart(Order od, string scode, string price, string qnt)
         {
@@ -418,7 +419,7 @@ namespace StockA
 
         private void button3_Click(object sender, EventArgs e)
         {
-            
+            //timer.Stop();
             button3.Enabled = false;
             button2.Enabled = true;
         }
