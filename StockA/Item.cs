@@ -30,4 +30,11 @@ namespace StockA
         public string[] sprice;
     }
 
+    public class Pendst
+    {
+        public string[] scode;
+        public string[] sqty;
+        
+    }
+
 }

@@ -28,6 +28,7 @@ namespace StockA
         public static bool running = false;
 
         static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
+        static System.Windows.Forms.Timer dayTimer = new System.Windows.Forms.Timer();
 
         public Item items;
         public static string id;
@@ -41,16 +42,21 @@ namespace StockA
 
         public string ordermethod;
         Balance bl;
+        PendStock pds;
 
 
 
-        
+
         public Form1()
         {
             InitializeComponent();
 
+            // 타이머 생성 및 시작
+            dayTimer.Tick += new EventHandler(TimerEventDay);
+            dayTimer.Interval = 1000 * 10;
+            dayTimer.Start();
 
-            
+
             //환경변수 로드
             string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
             items = new Item();
@@ -157,7 +163,19 @@ namespace StockA
 
         }
 
-        
+        private void TimerEventDay(Object myObject,
+                                                EventArgs myEventArgs)
+        {
+            logtxtBox.Text += getTime() + Environment.NewLine;
+            if (getTime().Substring(0,5) == "01:18")
+                Console.WriteLine("fire");
+            //익절 또는 손절 조건을 만족하는 보유주식 매도
+            //sellBucket();
+
+        }
+
+
+
         public string getQnt(string price, string notes)
         {
             int qn = Convert.ToInt32(notes) / Convert.ToInt32(price);
@@ -256,6 +274,8 @@ namespace StockA
 
         private void button4_Click(object sender, EventArgs e)
         {
+            myTimer.Stop();
+            //
             if (running)
             {
                 running = false;
@@ -331,11 +351,10 @@ namespace StockA
 
                 float ret = float.Parse(bucketItem.sret[j]);
 
-                if (ret > 5.0 || ret < -8)
+                if (ret > 3.0 || ret < -5)
                 {
 
                     //logtxtBox.Text += String.Format("{0} {1} {2}", bucketItem.scode[j], bucketItem.sret[j], bucketItem.sqnt[j]) + Environment.NewLine;
-                    //Console.WriteLine(j);
                     Order od = new Order(logtxtBox, accno, accpw);
                     var t = new Thread(() => RealStart(od, bucketItem.scode[j], bucketItem.sprice[j], bucketItem.sqnt[j]));
                     t.Start();
@@ -355,24 +374,22 @@ namespace StockA
 
 
             //익절 또는 손절 조건을 만족하는 보유주식 매도
-            sellBucket();
+            //sellBucket();
 
 
             //실시간 조건검색 로드
             sst = new SearchSt(logtxtBox, listView2, id, accno, accpw);
             sst.request();
             sst.end();
-
+            /*
             //보유종목리스트를 갱신
             bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
             bl.request();
             bl.end();
-
+            */
             // 타이머 생성 및 시작
             myTimer.Tick += new EventHandler(TimerEventProcessor);
-
-            // Sets the timer interval to 5 seconds.
-            myTimer.Interval = 1000 * 60;
+            myTimer.Interval = 1000 * 60*2;
             myTimer.Start();
 
 
@@ -383,17 +400,13 @@ namespace StockA
         private void TimerEventProcessor(Object myObject,
                                                 EventArgs myEventArgs)
         {
-            //myTimer.Stop();
-
-            // Displays a message box asking whether to continue running the timer.
-            //MessageBox.Show("Continue running");
-
-            Console.WriteLine("timer");
-
+            
+            //Console.WriteLine("timer");
+            
             //익절 또는 손절 조건을 만족하는 보유주식 매도
             sellBucket();
             
-
+            
             //load real time search list
             sst = new SearchSt(logtxtBox, listView2, id, accno, accpw);
             sst.request();

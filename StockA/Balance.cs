@@ -109,10 +109,6 @@ namespace StockA
             string r3 = t0424.GetFieldData("t0424OutBlock", "tdtsunik", 0); //평가손익
             string r4 = t0424.GetFieldData("t0424OutBlock", "dtsunik", 0); // 실현손익
             string r5 = t0424.GetFieldData("t0424OutBlock", "mamt", 0); //매입금액
-
-
-            this.output.Text += String.Format("{0} {1} {2} {3} {4}", r1, r2, r3, r4, r5) + Environment.NewLine;
-            //write a bucket list
             
             //initialization
             this.balance_sheet.Items.Clear();
@@ -158,12 +154,11 @@ namespace StockA
             int nCount = t0424.GetBlockCount("t0424OutBlock1");
             this.balance_sheet.Items[0].SubItems[5].Text = nCount.ToString();
 
-            this.output.Text += String.Format("ncount: {0}", nCount) + Environment.NewLine;
+            //this.output.Text += String.Format("ncount: {0}", nCount) + Environment.NewLine;
             string s1, s2, s3, s4, s5,p4;
-            //long s5;
+            
             int p1, p2, p3;
             //
-            //this.stocks.Items.Clear();
             this.stocks.Items.Clear();
 
 
@@ -190,9 +185,7 @@ namespace StockA
                 p4 = t0424.GetFieldData("t0424OutBlock1", "sunikrt", i); //수익률
                 s4 = t0424.GetFieldData("t0424OutBlock1", "pamt", i); //평균단가
 
-                //
-                //this.output.Text += String.Format("t0424 => {0} {1} {2} {3} {4} {5} {6} {7}", s1, s2, s3, s4, s5, p1, p2, p4) + Environment.NewLine;
-
+                
                 var row2 = new ListViewItem(new[] { "", "", "", "", "", "", "","","" });
                 row2.ToolTipText = "클릭하여 주문";
                 this.stocks.Items.Add(row2);
@@ -226,8 +219,6 @@ namespace StockA
 
                 }
                 //
-                //this.stocks.Items[i].Selected = true;
-                //add to jobject   
                 listScode.Add(s1);
                 listRate.Add(p4);
                 listQnt.Add(s5);
@@ -301,7 +292,6 @@ namespace StockA
             t0424.Request(false);
 
             CSPAQ12300.SetFieldData("CSPAQ12300InBlock1", "RecCnt", 0, "00001");
-            //CSPAQ12300.SetFieldData("CSPAQ12300InBlock1", "MgmtBrnNo", 0, " ");
             CSPAQ12300.SetFieldData("CSPAQ12300InBlock1", "AcntNo", 0, this.account_number);
             CSPAQ12300.SetFieldData("CSPAQ12300InBlock1", "Pwd", 0, this.account_pwd);
             CSPAQ12300.SetFieldData("CSPAQ12300InBlock1", "BalCreTp", 0, "0");

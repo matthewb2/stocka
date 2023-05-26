@@ -91,6 +91,7 @@
     </Compile>
     <Compile Include="Balance.cs" />
     <Compile Include="OrderCur.cs" />
+    <Compile Include="PendStock.cs" />
     <Compile Include="Preference.cs">
       <SubType>Form</SubType>
     </Compile>

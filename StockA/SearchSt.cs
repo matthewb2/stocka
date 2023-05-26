@@ -22,7 +22,8 @@ namespace StockA
         public string id;
         public RichTextBox output;
         public ListView bucket;
-        private string account_number, account_pwd;
+        private string acc_number, acc_pwd;
+        PendStock pds;
 
         public SearchSt(RichTextBox output, ListView bucket, string id, string accno, string accpw)
         {
@@ -39,8 +40,8 @@ namespace StockA
             this.keyVal = "";
 
             // 모의투자
-            this.account_number = accno;
-            this.account_pwd = accpw;
+            this.acc_number = accno;
+            this.acc_pwd = accpw;
 
         }
 
@@ -63,6 +64,20 @@ namespace StockA
                 AuthorList = JsonConvert.DeserializeObject<Bucket>(json);
             }
             
+            return AuthorList;
+        }
+
+        public Pendst getPendItem()
+        {
+            Pendst AuthorList = new Pendst();
+            string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+
+            using (StreamReader r = new StreamReader(path + @"\pendst.json"))
+            {
+                string json = r.ReadToEnd();
+                AuthorList = JsonConvert.DeserializeObject<Pendst>(json);
+            }
+
             return AuthorList;
         }
         private void OnReceiveData(string tr_code)
@@ -103,26 +118,48 @@ namespace StockA
                         if (shcode == bucketItem.scode[j])
                         {
                             isBucket = true;
+                            this.output.Text += String.Format("scode: {0}", shcode.ToString()) + Environment.NewLine;
                             
-                            this.output.Text += String.Format("{0}", bucketItem.sret[j]) + Environment.NewLine;
-
                             break;
                         }
 
                     }
                     //미체결 주문 목록에 있으면 제외
+                    
+                    Pendst pendItem = getPendItem();
+                    
 
+                    for (int j = 0; j < pendItem.scode.Length; j++)
+                    {
+
+                        if (shcode == pendItem.scode[j])
+                        {
+                            isBucket = true;
+                            this.output.Text += String.Format("scode: {0}", shcode.ToString()) + Environment.NewLine;
+
+                            break;
+                        }
+
+                    }
+                    
                     //order it
                     if (!isBucket)
                     {
-                        Order od = new Order(this.output, this.account_number, this.account_pwd);
-                        od.request(shcode, price, "2", "15");
+                        Order od = new Order(this.output, this.acc_number, this.acc_pwd);
+                        int qnt = 500000 / Convert.ToInt32(price);
+                        //this.output.Text += String.Format("qnt: {0}", qnt.ToString()) + Environment.NewLine;
+                        od.request(shcode, price, "2", qnt.ToString());
                         Thread.Sleep(200);
                         od.end();
 
                     }
                 }
             }
+            //미체결 종목 리스트 갱신
+
+            pds = new PendStock(this.acc_number, this.acc_pwd);
+            pds.request();
+            pds.end();
 
         }
         public void end()
