@@ -51,9 +51,9 @@ namespace StockA
             this.label1.Font = new System.Drawing.Font("굴림", 9F);
             this.label1.Location = new System.Drawing.Point(61, 166);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(226, 12);
+            this.label1.Size = new System.Drawing.Size(200, 12);
             this.label1.TabIndex = 1;
-            this.label1.Text = "스탁에이 StockA v0.3 엠케이솔루션 제공";
+            this.label1.Text = "스탁에이 StockA 엠케이솔루션 제공";
             // 
             // linkLabel1
             // 
@@ -88,7 +88,7 @@ namespace StockA
             this.Controls.Add(this.button1);
             this.Font = new System.Drawing.Font("굴림", 10F);
             this.Name = "About";
-            this.Text = "프로그램 정보";
+            this.Text = "v0.7 공개판 정보";
             this.ResumeLayout(false);
             this.PerformLayout();
 

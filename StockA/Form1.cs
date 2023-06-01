@@ -53,7 +53,7 @@ namespace StockA
 
             // 타이머 생성 및 시작
             dayTimer.Tick += new EventHandler(TimerEventDay);
-            dayTimer.Interval = 1000 * 10;
+            dayTimer.Interval = 1000 * 60;
             dayTimer.Start();
 
 
@@ -125,11 +125,9 @@ namespace StockA
             listView2.View = View.Details;
             listView2.ShowItemToolTips = true;
             listView2.MouseUp += new System.Windows.Forms.MouseEventHandler(listView2_MouseUp);
-
             listView2.Columns.Add("종목번호");
             listView2.Columns.Add("종목명");
             listView2.Columns.Add("현재가");
-            
             listView2.Columns.Add("잔고수량");
             listView2.Columns.Add("매입금액");
             listView2.Columns.Add("평가금액");
@@ -139,6 +137,7 @@ namespace StockA
 
             listView2.Columns[0].Width = 300;
             listView2.Columns[0].TextAlign = HorizontalAlignment.Center;
+
 
             var row1 = new ListViewItem(new[] { "", "", "", "", "", "", "", "", "", "" });
 
@@ -151,15 +150,15 @@ namespace StockA
                 column.TextAlign = HorizontalAlignment.Center;
 
             }
+            //listView2.Columns[1].Width = 170;
+            //listView2.Columns[3].Width = 60;
+
 
             SetHeight(listView2, 40);
 
             listView2.SelectedIndexChanged += listView2_SelectedIndexChanged;
-
             logtxtBox.Text += getTime() + Environment.NewLine;
             //
-
-            
 
         }
 
@@ -167,7 +166,7 @@ namespace StockA
                                                 EventArgs myEventArgs)
         {
             logtxtBox.Text += getTime() + Environment.NewLine;
-            if (getTime().Substring(0,5) == "01:18")
+            if (getTime().Substring(0,5) == "15:18")
                 Console.WriteLine("fire");
             //익절 또는 손절 조건을 만족하는 보유주식 매도
             //sellBucket();
@@ -224,14 +223,17 @@ namespace StockA
             return AuthorList;
         }
 
+        public string getTime()
+        {
+            return DateTime.Now.ToString("hh:mm:ss tt");
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             id = textBox4.Text;
             this.password = textBox2.Text;
             this.accno = textBox6.Text;
             this.accpw = textBox5.Text;
-
-            
 
             session = new XASessionClass();
             bool conn  = session.ConnectServer("demo.ebestsec.co.kr", 20001);
@@ -240,17 +242,11 @@ namespace StockA
             //로그인 성공 메시지 수신 후에 보유계좌 수 호출 로그인 이벤트 핸들러를 이용
             session._IXASessionEvents_Event_Login += XASession_Login;
 
-
-
             if (conn)
                 ((XA_SESSIONLib.IXASession)session).Login(textBox4.Text, textBox2.Text, "", 0, false);
             
         }
 
-        public string getTime()
-        {
-            return DateTime.Now.ToString("hh:mm:ss tt");
-        }
         private void XASession_Login(string szCode, string szMsg)
         {
 
@@ -269,6 +265,11 @@ namespace StockA
             bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
             bl.request();
             bl.end();
+            //
+            //PL pl = new PL(logtxtBox, listView1, this.accno, this.accpw);
+            //pl.request("20230520", "20230529");
+            //pl.end();
+
 
         }
 
@@ -374,7 +375,7 @@ namespace StockA
 
 
             //익절 또는 손절 조건을 만족하는 보유주식 매도
-            //sellBucket();
+            sellBucket();
 
 
             //실시간 조건검색 로드
@@ -389,7 +390,7 @@ namespace StockA
             */
             // 타이머 생성 및 시작
             myTimer.Tick += new EventHandler(TimerEventProcessor);
-            myTimer.Interval = 1000 * 60*2;
+            myTimer.Interval = 1000 * 60;
             myTimer.Start();
 
 
@@ -452,6 +453,13 @@ namespace StockA
             }
                 
             
+        }
+
+        private void 기간손익ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProfitLoss pl = new ProfitLoss();
+            pl.Show();
+
         }
 
         private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)

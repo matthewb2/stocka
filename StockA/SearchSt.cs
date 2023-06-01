@@ -118,7 +118,7 @@ namespace StockA
                         if (shcode == bucketItem.scode[j])
                         {
                             isBucket = true;
-                            this.output.Text += String.Format("scode: {0}", shcode.ToString()) + Environment.NewLine;
+                            //this.output.Text += String.Format("scode: {0}", shcode.ToString()) + Environment.NewLine;
                             
                             break;
                         }
@@ -135,7 +135,7 @@ namespace StockA
                         if (shcode == pendItem.scode[j])
                         {
                             isBucket = true;
-                            this.output.Text += String.Format("scode: {0}", shcode.ToString()) + Environment.NewLine;
+                            //this.output.Text += String.Format("scode: {0}", shcode.ToString()) + Environment.NewLine;
 
                             break;
                         }
@@ -147,7 +147,6 @@ namespace StockA
                     {
                         Order od = new Order(this.output, this.acc_number, this.acc_pwd);
                         int qnt = 500000 / Convert.ToInt32(price);
-                        //this.output.Text += String.Format("qnt: {0}", qnt.ToString()) + Environment.NewLine;
                         od.request(shcode, price, "2", qnt.ToString());
                         Thread.Sleep(200);
                         od.end();

@@ -154,7 +154,6 @@ namespace StockA
             int nCount = t0424.GetBlockCount("t0424OutBlock1");
             this.balance_sheet.Items[0].SubItems[5].Text = nCount.ToString();
 
-            //this.output.Text += String.Format("ncount: {0}", nCount) + Environment.NewLine;
             string s1, s2, s3, s4, s5,p4;
             
             int p1, p2, p3;
@@ -261,12 +260,11 @@ namespace StockA
                 column.TextAlign = HorizontalAlignment.Center;
 
             }
-
+            this.stocks.Columns[1].Width = -2;
 
             if (nCount == 0)
-            {
                 this.output.Text += String.Format("{ 'error':{ 'message':'order failed'} }") + Environment.NewLine;
-            }
+            
 
             is_data_received = true;
 

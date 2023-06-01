@@ -92,11 +92,18 @@
     <Compile Include="Balance.cs" />
     <Compile Include="OrderCur.cs" />
     <Compile Include="PendStock.cs" />
+    <Compile Include="PL.cs" />
     <Compile Include="Preference.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Preference.Designer.cs">
       <DependentUpon>Preference.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProfitLoss.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProfitLoss.Designer.cs">
+      <DependentUpon>ProfitLoss.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -129,6 +136,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Preference.resx">
       <DependentUpon>Preference.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProfitLoss.resx">
+      <DependentUpon>ProfitLoss.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -37,6 +37,7 @@ namespace StockA
             this.주문내역확인ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.도움말ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.잔고내역확인ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.기간손익ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.도움말ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.정보ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -88,7 +89,7 @@ namespace StockA
             this.도움말ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1053, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1074, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -126,7 +127,8 @@ namespace StockA
             // 도움말ToolStripMenuItem1
             // 
             this.도움말ToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.잔고내역확인ToolStripMenuItem});
+            this.잔고내역확인ToolStripMenuItem,
+            this.기간손익ToolStripMenuItem});
             this.도움말ToolStripMenuItem1.Name = "도움말ToolStripMenuItem1";
             this.도움말ToolStripMenuItem1.Size = new System.Drawing.Size(43, 20);
             this.도움말ToolStripMenuItem1.Text = "잔고";
@@ -137,6 +139,13 @@ namespace StockA
             this.잔고내역확인ToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.잔고내역확인ToolStripMenuItem.Text = "잔고내역확인";
             this.잔고내역확인ToolStripMenuItem.Click += new System.EventHandler(this.정보ToolStripMenuItem_Click);
+            // 
+            // 기간손익ToolStripMenuItem
+            // 
+            this.기간손익ToolStripMenuItem.Name = "기간손익ToolStripMenuItem";
+            this.기간손익ToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.기간손익ToolStripMenuItem.Text = "기간손익";
+            this.기간손익ToolStripMenuItem.Click += new System.EventHandler(this.기간손익ToolStripMenuItem_Click);
             // 
             // 도움말ToolStripMenuItem
             // 
@@ -172,7 +181,7 @@ namespace StockA
             this.splitContainer1.Panel2.Margin = new System.Windows.Forms.Padding(3);
             this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(5);
             this.splitContainer1.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel2_Paint);
-            this.splitContainer1.Size = new System.Drawing.Size(1053, 584);
+            this.splitContainer1.Size = new System.Drawing.Size(1074, 584);
             this.splitContainer1.SplitterDistance = 358;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -192,12 +201,11 @@ namespace StockA
             this.splitContainer2.Panel1.Controls.Add(this.button1);
             this.splitContainer2.Panel1.Controls.Add(this.groupBox2);
             this.splitContainer2.Panel1.Controls.Add(this.groupBox1);
-            
             // 
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
-            this.splitContainer2.Size = new System.Drawing.Size(1053, 358);
+            this.splitContainer2.Size = new System.Drawing.Size(1074, 358);
             this.splitContainer2.SplitterDistance = 240;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -371,13 +379,12 @@ namespace StockA
             // 
             this.splitContainer3.Panel1.Controls.Add(this.listView1);
             this.splitContainer3.Panel1.Padding = new System.Windows.Forms.Padding(5);
-            
             // 
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.listView2);
             this.splitContainer3.Panel2.Padding = new System.Windows.Forms.Padding(5);
-            this.splitContainer3.Size = new System.Drawing.Size(809, 358);
+            this.splitContainer3.Size = new System.Drawing.Size(830, 358);
             this.splitContainer3.SplitterDistance = 103;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -389,7 +396,7 @@ namespace StockA
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(5, 5);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(799, 93);
+            this.listView1.Size = new System.Drawing.Size(820, 93);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             // 
@@ -401,7 +408,7 @@ namespace StockA
             this.listView2.HideSelection = false;
             this.listView2.Location = new System.Drawing.Point(5, 5);
             this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(799, 241);
+            this.listView2.Size = new System.Drawing.Size(820, 241);
             this.listView2.TabIndex = 1;
             this.listView2.UseCompatibleStateImageBehavior = false;
             this.listView2.SelectedIndexChanged += new System.EventHandler(this.listView2_SelectedIndexChanged);
@@ -414,7 +421,7 @@ namespace StockA
             this.logtxtBox.Margin = new System.Windows.Forms.Padding(5);
             this.logtxtBox.Name = "logtxtBox";
             this.logtxtBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.logtxtBox.Size = new System.Drawing.Size(1043, 212);
+            this.logtxtBox.Size = new System.Drawing.Size(1064, 212);
             this.logtxtBox.TabIndex = 0;
             this.logtxtBox.Text = "";
             // 
@@ -422,13 +429,13 @@ namespace StockA
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1053, 608);
+            this.ClientSize = new System.Drawing.Size(1074, 608);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "스탁에이 자동매매 프로그램";
+            this.Text = "스탁에이 자동매매 이베스트증권용";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -486,6 +493,7 @@ namespace StockA
         private System.Windows.Forms.ToolStripMenuItem 잔고내역확인ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 도움말ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 정보ToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem 기간손익ToolStripMenuItem;
     }
 }
 
