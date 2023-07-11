@@ -183,7 +183,8 @@ namespace StockA
                 p3 = Int32.Parse(t0424.GetFieldData("t0424OutBlock1", "dtsunik", i)); //평가손익
                 p4 = t0424.GetFieldData("t0424OutBlock1", "sunikrt", i); //수익률
                 s4 = t0424.GetFieldData("t0424OutBlock1", "pamt", i); //평균단가
-
+                if (p4 == "0.")
+                    p4 = "0";
                 
                 var row2 = new ListViewItem(new[] { "", "", "", "", "", "", "","","" });
                 row2.ToolTipText = "클릭하여 주문";

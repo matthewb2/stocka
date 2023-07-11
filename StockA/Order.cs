@@ -40,8 +40,8 @@ namespace StockA
             */
 
             string ord_num = CSPAT00600.GetFieldData("CSPAT00600OutBlock2", "OrdNo", 0); //주문번호
-            
-            this.output.Text += String.Format("주문번호 => {0} 주문이 접수되었습니다", ord_num ) + Environment.NewLine;
+            if (ord_num !="")
+                this.output.Text += String.Format("주문번호 => {0}", ord_num ) + Environment.NewLine;
            
             
         }

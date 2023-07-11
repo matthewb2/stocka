@@ -15,7 +15,7 @@ namespace StockA
 {
     public partial class Preference : Form
     {
-        List<Item> items;
+        Item items;
         //public static string id, accNo;
         public string id;
 
@@ -29,10 +29,10 @@ namespace StockA
             using (StreamReader r = new StreamReader(path + @"\pref.json"))
             {
                 string json = r.ReadToEnd();
-                items = JsonConvert.DeserializeObject<List<Item>>(json);
+                items = JsonConvert.DeserializeObject<Item>(json);
             }
             //조건식 로드
-            string[] st = items[0].light;
+            string[] st = items.light;
             System.Object[] ItemObject = new System.Object[st.Length];
 
             for (int i = 0; i < st.Length; i++)
@@ -43,11 +43,11 @@ namespace StockA
 
             comboBox1.SelectedIndex = 0;
             //계좌번호
-            textBox4.Text = items[0].millis;
+            textBox4.Text = items.accno;
             
-            textBox5.Text = items[0].stamp;
+            textBox5.Text = items.stamp;
 
-            textBox1.Text = items[0].temp.ToString();
+            textBox1.Text = items.temp.ToString();
             
         }
 
@@ -63,21 +63,21 @@ namespace StockA
             try
             {   
                 JObject sonSpec = new JObject(
-                new JProperty("millis", textBox4.Text),
+                new JProperty("accno", textBox4.Text),
                 new JProperty("stamp", textBox5.Text),
-                new JProperty("light", items[0].light),
+                new JProperty("light", items.light),
                 new JProperty("vcc", "false")
                 );
 
-                if (!File.Exists(path + @"\pref2.json"))
+                if (!File.Exists(path + @"\pref.json"))
                 {
-                    using (FileStream fs = File.Create(path + @"\pref2.json"))
+                    using (FileStream fs = File.Create(path + @"\pref.json"))
                     {
                         byte[] info = new UTF8Encoding(true).GetBytes(sonSpec.ToString());
                         fs.Write(info, 0, info.Length);
                     }
                 }
-                else  File.WriteAllText(path+ @"\pref2.json", sonSpec.ToString());
+                else  File.WriteAllText(path+ @"\pref.json", sonSpec.ToString());
              
             }
             catch (Exception exp)

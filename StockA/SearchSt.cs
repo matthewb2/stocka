@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -20,16 +21,18 @@ namespace StockA
         public bool is_data_received;
         public string keyVal;
         public string id;
+        public int km;
         public RichTextBox output;
         public ListView bucket;
         private string acc_number, acc_pwd;
         PendStock pds;
 
-        public SearchSt(RichTextBox output, ListView bucket, string id, string accno, string accpw)
+        public SearchSt(RichTextBox output, ListView bucket, string id, string accno, string accpw, int km)
         {
             this.output = output;
             this.bucket = bucket;
             this.id = id;
+            this.km = km;
 
             this.is_data_received = false;
 
@@ -90,13 +93,14 @@ namespace StockA
             this.keyVal = t1857.GetFieldData("t1857OutBlock", "AlertNum", 0);
 
             this.output.Text += String.Format("검색된 종목수 => {0}", r1) + Environment.NewLine;
-            this.output.Text += String.Format("API Key =>  {0}", this.keyVal) + Environment.NewLine;
+            //this.output.Text += String.Format("API Key =>  {0}", this.keyVal) + Environment.NewLine;
 
             int nCount = Convert.ToInt32(r1);
-            //Console.WriteLine(nCount);
             getBucketItem();
             
             string shcode, hname, price;
+
+            List<string> listScode = new List<string>();
             if (nCount > 0)
             {
                 for (int i = 0; i < nCount; i++)
@@ -105,6 +109,9 @@ namespace StockA
                     shcode = t1857.GetFieldData("t1857OutBlock1", "shcode", i);
                     hname = t1857.GetFieldData("t1857OutBlock1", "hname", i);
                     price = t1857.GetFieldData("t1857OutBlock1", "price", i);
+
+
+                    //검색 종목을 파일로 출력
 
                     //check if the stock exist in a bucket
                     // 보유종목 리스트에 있으면 제외
@@ -118,8 +125,6 @@ namespace StockA
                         if (shcode == bucketItem.scode[j])
                         {
                             isBucket = true;
-                            //this.output.Text += String.Format("scode: {0}", shcode.ToString()) + Environment.NewLine;
-                            
                             break;
                         }
 
@@ -135,8 +140,6 @@ namespace StockA
                         if (shcode == pendItem.scode[j])
                         {
                             isBucket = true;
-                            //this.output.Text += String.Format("scode: {0}", shcode.ToString()) + Environment.NewLine;
-
                             break;
                         }
 
@@ -145,15 +148,40 @@ namespace StockA
                     //order it
                     if (!isBucket)
                     {
-                        Order od = new Order(this.output, this.acc_number, this.acc_pwd);
-                        int qnt = 500000 / Convert.ToInt32(price);
-                        od.request(shcode, price, "2", qnt.ToString());
-                        Thread.Sleep(200);
-                        od.end();
+                        
+                        int qnt = this.km / Convert.ToInt32(price);
+                        if (shcode != null && shcode != "")
+                        {
+                            Order od = new Order(this.output, this.acc_number, this.acc_pwd);
+                            od.request(shcode, price, "2", qnt.ToString());
+                            Thread.Sleep(200);
+                            od.end();
+                        }
 
                     }
+                    listScode.Add(shcode);
+                }
+                
+            }
+
+
+            //
+            string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+            JObject sonSpec = new JObject(
+                   new JProperty("scode", listScode.ToArray())
+                   );
+
+
+            if (!File.Exists(path + @"\0000.json"))
+            {
+                using (FileStream fs = File.Create(path + @"\0000.json"))
+                {
+                    byte[] info = new UTF8Encoding(true).GetBytes(sonSpec.ToString());
+                    fs.Write(info, 0, info.Length);
                 }
             }
+            else File.WriteAllText(path + @"\0000.json", sonSpec.ToString());
+
             //미체결 종목 리스트 갱신
 
             pds = new PendStock(this.acc_number, this.acc_pwd);
@@ -166,11 +194,11 @@ namespace StockA
             t1857.RemoveService("t1857", this.keyVal);
         }
 
-        public void request()
+        public void request(string st_num)
         {
             t1857.SetFieldData("t1857InBlock", "sRealFlag", 0, "0"); //실시간 조회는 실계좌일 때만 가능
             t1857.SetFieldData("t1857InBlock", "sSearchFlag", 0, "S");
-            t1857.SetFieldData("t1857InBlock", "query_index", 0, this.id + "  0000");
+            t1857.SetFieldData("t1857InBlock", "query_index", 0, this.id + st_num);
 
             //tr요청
             int result = t1857.RequestService("t1857", "");

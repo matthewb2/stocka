@@ -28,6 +28,11 @@ namespace StockA
         public static bool running = false;
 
         static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
+        static System.Windows.Forms.Timer myTimer2 = new System.Windows.Forms.Timer();
+        static System.Windows.Forms.Timer myTimer3 = new System.Windows.Forms.Timer();
+        static System.Windows.Forms.Timer myTimer4 = new System.Windows.Forms.Timer();
+        static System.Windows.Forms.Timer myTimer5 = new System.Windows.Forms.Timer();
+
         static System.Windows.Forms.Timer dayTimer = new System.Windows.Forms.Timer();
 
         public Item items;
@@ -42,10 +47,23 @@ namespace StockA
 
         public string ordermethod;
         Balance bl;
-        PendStock pds;
 
 
 
+        private void TimerEventDay(Object myObject,
+                                                EventArgs myEventArgs)
+        {
+            //Console.WriteLine(getTime().Substring(0, 5));
+            logtxtBox.Text += getTime() + Environment.NewLine;
+            if (getTime().Substring(0, 5) == "03:05")
+            {
+                //검색조건 0000 보유중이면 전량 매도
+                sellAll0000();
+
+            }
+
+
+        }
 
         public Form1()
         {
@@ -53,9 +71,8 @@ namespace StockA
 
             // 타이머 생성 및 시작
             dayTimer.Tick += new EventHandler(TimerEventDay);
-            dayTimer.Interval = 1000 * 60;
+            dayTimer.Interval = 1000 * 30;
             dayTimer.Start();
-
 
             //환경변수 로드
             string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
@@ -70,11 +87,16 @@ namespace StockA
             }
 
             //조건식 로드
-            //this.profit = items.profitrate;
-            //this.loss = items.lossrate;
+            this.profit = items.profitrate;
+            this.loss = items.lossrate;
 
             logtxtBox.Text += this.ordermethod + Environment.NewLine;
             logtxtBox.Text += this.km + Environment.NewLine;
+
+            float yield = this.profit;
+            float negative = this.loss;
+
+            logtxtBox.Text += String.Format("{0} {1}", yield, negative) + Environment.NewLine;
 
             //간단주문 준비
             qo = new QuickOrd(logtxtBox, accno, accno);
@@ -114,7 +136,6 @@ namespace StockA
 
             foreach (ColumnHeader column in listView1.Columns)
             {
-                //column.Width = -2;
                 column.Width = 100;
                 column.TextAlign = HorizontalAlignment.Center;
 
@@ -150,35 +171,19 @@ namespace StockA
                 column.TextAlign = HorizontalAlignment.Center;
 
             }
-            //listView2.Columns[1].Width = 170;
-            //listView2.Columns[3].Width = 60;
-
-
+        
             SetHeight(listView2, 40);
 
             listView2.SelectedIndexChanged += listView2_SelectedIndexChanged;
             logtxtBox.Text += getTime() + Environment.NewLine;
-            //
+         
 
         }
-
-        private void TimerEventDay(Object myObject,
-                                                EventArgs myEventArgs)
-        {
-            logtxtBox.Text += getTime() + Environment.NewLine;
-            if (getTime().Substring(0,5) == "15:18")
-                Console.WriteLine("fire");
-            //익절 또는 손절 조건을 만족하는 보유주식 매도
-            //sellBucket();
-
-        }
-
 
 
         public string getQnt(string price, string notes)
         {
             int qn = Convert.ToInt32(notes) / Convert.ToInt32(price);
-
             return qn.ToString();
         }
 
@@ -215,10 +220,19 @@ namespace StockA
             string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
 
             using (StreamReader r = new StreamReader(path + @"\bucket.json"))
-            {
-                string json = r.ReadToEnd();
-                AuthorList = JsonConvert.DeserializeObject<Bucket>(json);
-            }
+                AuthorList = JsonConvert.DeserializeObject<Bucket>(r.ReadToEnd());
+            
+            return AuthorList;
+        }
+
+
+        public Extra getExtraItem()
+        {
+            Extra AuthorList = new Extra();
+            string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+
+            using (StreamReader r = new StreamReader(path + @"\0000.json"))
+                AuthorList = JsonConvert.DeserializeObject<Extra>(r.ReadToEnd());
 
             return AuthorList;
         }
@@ -250,13 +264,12 @@ namespace StockA
         private void XASession_Login(string szCode, string szMsg)
         {
 
-            logtxtBox.Text += getTime()+" 로그인 okay" + Environment.NewLine;
+            logtxtBox.Text += getTime() + " 로그인 okay" + Environment.NewLine;
             logged = true;
-            if(!button2.Enabled)
+            if (!button2.Enabled)
                 button2.Enabled = true;
             button4.Enabled = true;
 
-            
             //잔고
             int nCount = session.GetAccountListCount();
             //
@@ -265,14 +278,37 @@ namespace StockA
             bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
             bl.request();
             bl.end();
-            //
-            //PL pl = new PL(logtxtBox, listView1, this.accno, this.accpw);
-            //pl.request("20230520", "20230529");
-            //pl.end();
 
-
+            
         }
+        private void sellAll0000()
+        {
+            Order od = new Order(logtxtBox, this.accno, this.accpw);
 
+            Bucket bucketItem = getBucketItem();
+            Extra extraItem = getExtraItem();
+            //bool isBucket = false;
+
+            for (int i = 0; i < extraItem.scode.Length; i++)
+            {
+                for (int j = 0; j < bucketItem.scode.Length; j++)
+                {
+
+                    if (extraItem.scode[i] == bucketItem.scode[j])
+                    {
+                        //매도실행
+                        Console.WriteLine(extraItem.scode[i]);
+                        od.request(bucketItem.scode[j], bucketItem.sprice[j], "1", bucketItem.sqnt[j]); //1 sell
+                        Thread.Sleep(100);
+                        od.end();
+                        break;
+
+                    }
+
+                }
+            }
+        }
+        
         private void button4_Click(object sender, EventArgs e)
         {
             myTimer.Stop();
@@ -320,9 +356,6 @@ namespace StockA
                 sh.Show();
 
             }
-
-
-            // stocks manipulation when a mouse click event occurs
             if (qo.Visible)
             {
                 qo.textBox3.Text = listView2.Items[rowindex].SubItems[1].Text;
@@ -341,26 +374,41 @@ namespace StockA
 
         private void sellBucket()
         {
+            
             float yield = this.profit;
             float negative = this.loss;
-
-            //
             Bucket bucketItem = getBucketItem();
 
             for (int j = 0; j < bucketItem.scode.Length - 1; j++)
             {
 
                 float ret = float.Parse(bucketItem.sret[j]);
-
-                if (ret > 3.0 || ret < -5)
+                if (ret > yield || ret < negative)
                 {
-
-                    //logtxtBox.Text += String.Format("{0} {1} {2}", bucketItem.scode[j], bucketItem.sret[j], bucketItem.sqnt[j]) + Environment.NewLine;
                     Order od = new Order(logtxtBox, accno, accpw);
                     var t = new Thread(() => RealStart(od, bucketItem.scode[j], bucketItem.sprice[j], bucketItem.sqnt[j]));
                     t.Start();
+                }
 
+            }
+        }
 
+        private void sell_0000()
+        {
+
+            float yield = this.profit;
+            float negative = this.loss;
+            Bucket bucketItem = getBucketItem();
+
+            for (int j = 0; j < bucketItem.scode.Length - 1; j++)
+            {
+
+                float ret = float.Parse(bucketItem.sret[j]);
+                if (ret > yield || ret < negative)
+                {
+                    Order od = new Order(logtxtBox, accno, accpw);
+                    var t = new Thread(() => RealStart(od, bucketItem.scode[j], bucketItem.sprice[j], bucketItem.sqnt[j]));
+                    t.Start();
                 }
 
             }
@@ -372,28 +420,37 @@ namespace StockA
             button2.Enabled = false;
             running = true;
 
-
-
             //익절 또는 손절 조건을 만족하는 보유주식 매도
             sellBucket();
 
-
-            //실시간 조건검색 로드
-            sst = new SearchSt(logtxtBox, listView2, id, accno, accpw);
-            sst.request();
-            sst.end();
-            /*
-            //보유종목리스트를 갱신
-            bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
-            bl.request();
-            bl.end();
-            */
-            // 타이머 생성 및 시작
+            // 타이머 생성 및 시작            
             myTimer.Tick += new EventHandler(TimerEventProcessor);
             myTimer.Interval = 1000 * 60;
             myTimer.Start();
 
+            Thread.Sleep(3000);
+            // 타이머 생성 및 시작
+            myTimer2.Tick += new EventHandler(Timer2EventProcessor);
+            myTimer2.Interval = 1000 * 60;
+            myTimer2.Start();
 
+            Thread.Sleep(3000);
+            // 타이머 생성 및 시작
+            myTimer3.Tick += new EventHandler(Timer3EventProcessor);
+            myTimer3.Interval = 1000 * 60;
+            myTimer3.Start();
+
+            Thread.Sleep(3000);
+            // 타이머 생성 및 시작
+            myTimer4.Tick += new EventHandler(Timer4EventProcessor);
+            myTimer4.Interval = 1000 * 60;
+            //myTimer4.Start();
+
+            Thread.Sleep(3000);
+            // 타이머 생성 및 시작
+            myTimer5.Tick += new EventHandler(Timer5EventProcessor);
+            myTimer5.Interval = 1000 * 60;
+            //myTimer5.Start();
 
         }
 
@@ -402,25 +459,73 @@ namespace StockA
                                                 EventArgs myEventArgs)
         {
             
-            //Console.WriteLine("timer");
-            
             //익절 또는 손절 조건을 만족하는 보유주식 매도
             sellBucket();
             
-            
             //load real time search list
-            sst = new SearchSt(logtxtBox, listView2, id, accno, accpw);
-            sst.request();
+            sst = new SearchSt(logtxtBox, listView2, id, accno, accpw, this.km);
+            sst.request("  0000");
             sst.end();
             
-            //refesh the bucket list
             bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
             bl.request();
             bl.end();
         }
 
-        
+        private void Timer2EventProcessor(Object myObject,
+                                                EventArgs myEventArgs)
+        {
+            //익절 또는 손절 조건을 만족하는 보유주식 매도
+            sellBucket();
+            
+            //load real time search list
+            sst = new SearchSt(logtxtBox, listView2, id, accno, accpw, this.km);
+            sst.request("  0001");
+            sst.end();
+            
+        }
 
+
+        private void Timer3EventProcessor(Object myObject,
+                                                EventArgs myEventArgs)
+        {
+
+            //익절 또는 손절 조건을 만족하는 보유주식 매도
+            sellBucket();
+
+            //load real time search list
+            sst = new SearchSt(logtxtBox, listView2, id, accno, accpw, this.km);
+            sst.request("  0002");
+            sst.end();
+
+        }
+
+        private void Timer4EventProcessor(Object myObject,
+                                        EventArgs myEventArgs)
+        {
+
+            //익절 또는 손절 조건을 만족하는 보유주식 매도
+            sellBucket();
+
+            //load real time search list
+            sst = new SearchSt(logtxtBox, listView2, id, accno, accpw, this.km);
+            sst.request("  0003");
+            sst.end();
+
+        }
+        private void Timer5EventProcessor(Object myObject,
+                                        EventArgs myEventArgs)
+        {
+
+            //익절 또는 손절 조건을 만족하는 보유주식 매도
+            sellBucket();
+
+            //load real time search list
+            sst = new SearchSt(logtxtBox, listView2, id, accno, accpw, this.km);
+            sst.request("  0000");
+            sst.end();
+
+        }
         private static void RealStart(Order od, string scode, string price, string qnt)
         {
             od.request(scode, price, "1", qnt);

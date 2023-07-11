@@ -9,7 +9,7 @@ namespace StockA
 
     public class Item
     {
-        public string millis;
+        public string accno;
         public string stamp;
         public string datetime;
         public string[] light;
@@ -35,6 +35,13 @@ namespace StockA
         public string[] scode;
         public string[] sqty;
         
+    }
+
+    public class Extra
+    {
+        public string[] scode;
+        //public string[] sqty;
+
     }
 
 }
