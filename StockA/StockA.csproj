@@ -75,12 +75,19 @@
       <DependentUpon>CancelOrder.cs</DependentUpon>
     </Compile>
     <Compile Include="CurrentSt.cs" />
+    <Compile Include="CurrentTr.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="ListCurSt.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ListCurSt.Designer.cs">
       <DependentUpon>ListCurSt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ListCurTr.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ListCurTr.Designer.cs">
+      <DependentUpon>ListCurTr.cs</DependentUpon>
     </Compile>
     <Compile Include="Order.cs" />
     <Compile Include="Form1.cs">
@@ -133,6 +140,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ListCurSt.resx">
       <DependentUpon>ListCurSt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ListCurTr.resx">
+      <DependentUpon>ListCurTr.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Preference.resx">
       <DependentUpon>Preference.cs</DependentUpon>

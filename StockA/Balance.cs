@@ -15,6 +15,9 @@ namespace StockA
     class Balance
     {
         private XAQueryClass t0424;
+        private XAQueryClass t0150;
+        private XAQueryClass t0425;
+
         private XAQueryClass CSPAQ12300;
 
         public bool is_data_received;
@@ -44,9 +47,18 @@ namespace StockA
             t0424.ResFileName = @"C:\eBEST\xingAPI\Res\t0424.res"; //RES 파일 등록
             CSPAQ12300 = new XAQueryClass();
             CSPAQ12300.ResFileName = @"C:\eBEST\xingAPI\Res\CSPAQ12300.res"; //RES 파일 등록
+
+            t0150 = new XAQueryClass();
+            t0150.ResFileName = @"C:\eBEST\xingAPI\Res\t0150.res"; //RES 파일 등록
+
+            t0425 = new XAQueryClass();
+            t0425.ResFileName = @"C:\eBEST\xingAPI\Res\t0425.res"; //RES 파일 등록
+
             //
             t0424.ReceiveData += t0424OnReceiveData;
             CSPAQ12300.ReceiveData += CSPAQ12300OnReceiveData;
+            t0150.ReceiveData += t0150OnReceiveData;
+            t0425.ReceiveData += t0425OnReceiveData;
 
             this.keyVal = "";
             
@@ -181,8 +193,10 @@ namespace StockA
                 p2 = Int32.Parse(t0424.GetFieldData("t0424OutBlock1", "appamt", i)); //평가금액
 
                 p3 = Int32.Parse(t0424.GetFieldData("t0424OutBlock1", "dtsunik", i)); //평가손익
-                p4 = t0424.GetFieldData("t0424OutBlock1", "sunikrt", i); //수익률
+                p4 = t0424.GetFieldData("t0424OutBlock1", "sunikrt", i); //평가수익률
+
                 s4 = t0424.GetFieldData("t0424OutBlock1", "pamt", i); //평균단가
+                
                 if (p4 == "0.")
                     p4 = "0";
                 
@@ -270,6 +284,37 @@ namespace StockA
             is_data_received = true;
 
         }
+
+
+        private void t0150OnReceiveData(string tr_code)
+        {
+            this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
+
+            //string r1 = t0150.GetFieldData("t0150OutBlock", "mdamt", 0);
+            string r12 = t0150.GetFieldData("t0150OutBlock", "mdadjamt", 0);
+
+            this.output.Text += r12 + Environment.NewLine;
+            int nCount = t0150.GetBlockCount("t0150OutBlock1");
+            //MessageBox.Show(nCount.ToString());
+
+
+        }
+
+
+        private void t0425OnReceiveData(string tr_code)
+        {
+            this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
+
+            //string r1 = t0150.GetFieldData("t0150OutBlock", "mdamt", 0);
+            //string r12 = t0150.GetFieldData("t0150OutBlock", "mdadjamt", 0);
+
+            //this.output.Text += r1 + Environment.NewLine;
+            int nCount = t0425.GetBlockCount("t0425OutBlock1");
+            MessageBox.Show(nCount.ToString());
+
+
+        }
+
         public void end()
         {
             t0424.RemoveService("t0424", this.keyVal);
@@ -297,6 +342,20 @@ namespace StockA
 
             //tr요청
             CSPAQ12300.Request(false);
+            //
+            t0150.SetFieldData("t0150InBlock", "accno", 0, this.account_number);
+            t0150.SetFieldData("t0150InBlock", "cts_medosu", 0, "1");
+            //
+            t0150.Request(false);
+
+            t0425.SetFieldData("t0425InBlock", "accno", 0, this.account_number);
+            t0425.SetFieldData("t0425InBlock", "passwd", 0, this.account_pwd);
+            //t0424.SetFieldData("t0424InBlock", "prcgb", 0, "1");
+            t0425.SetFieldData("t0425InBlock", "chegb", 0, "2");
+            //t0424.SetFieldData("t0424InBlock", "dangb", 0, "0");
+            //t0424.SetFieldData("t0424InBlock", "charge", 0, "0");
+            //t0424.SetFieldData("t0424InBlock", "cts_expcode", 0, "");
+            //t0425.Request(false);
         }
     }
 

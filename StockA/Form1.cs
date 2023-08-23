@@ -43,6 +43,7 @@ namespace StockA
         public int profit, loss, km;
         public QuickOrd qo;
         public ListCurSt lsc;
+        public ListCurTr lct = new ListCurTr();
         StockInfo si;
 
         public string ordermethod;
@@ -55,8 +56,20 @@ namespace StockA
         {
             //Console.WriteLine(getTime().Substring(0, 5));
             logtxtBox.Text += getTime() + Environment.NewLine;
-            if (getTime().Substring(0, 5) == "03:05")
+            if (getTime().Substring(0, 5) == "09:00" && getTime().Substring(9, 2) == "오전")
             {
+                //자동매매 시작
+                button1.PerformClick();
+                Thread.Sleep(100);
+
+                button2.PerformClick();
+            }
+
+            if (getTime().Substring(0, 5) == "03:12" && getTime().Substring(9, 2) == "오후")
+            {
+                //0000 stop
+                myTimer.Stop();
+
                 //검색조건 0000 보유중이면 전량 매도
                 sellAll0000();
 
@@ -68,6 +81,9 @@ namespace StockA
         public Form1()
         {
             InitializeComponent();
+
+            
+            //MessageBox.Show(getTime().Substring(9, 2));
 
             // 타이머 생성 및 시작
             dayTimer.Tick += new EventHandler(TimerEventDay);
@@ -109,7 +125,7 @@ namespace StockA
             textBox4.Text = "";
             textBox2.Text = "";
             textBox6.Text = "";
-            textBox5.Text = "0000";
+            textBox5.Text = "";
             checkBox1.Checked = true;
             button2.Enabled = false;
             button3.Enabled = false;
@@ -125,7 +141,7 @@ namespace StockA
             listView1.Columns.Add("평가손익");
             listView1.Columns.Add("손익률(%)");
             listView1.Columns.Add("보유종목수");
-            listView1.Columns.Add("당일실현손익");
+            listView1.Columns.Add("당일매매손익");
             listView1.Columns.Add("D+1 예수금");
             listView1.Columns.Add("D+2 예수금");
             
@@ -176,7 +192,15 @@ namespace StockA
 
             listView2.SelectedIndexChanged += listView2_SelectedIndexChanged;
             logtxtBox.Text += getTime() + Environment.NewLine;
-         
+
+            // 정해진 시각에 자동실행
+            //getTime()
+                
+            //getTime().Substring(0, 5) == "03:12"
+
+
+
+
 
         }
 
@@ -263,6 +287,9 @@ namespace StockA
 
         private void XASession_Login(string szCode, string szMsg)
         {
+            //
+            logtxtBox.Text = "";
+            //
 
             logtxtBox.Text += getTime() + " 로그인 okay" + Environment.NewLine;
             logged = true;
@@ -278,8 +305,8 @@ namespace StockA
             bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
             bl.request();
             bl.end();
-
             
+
         }
         private void sellAll0000()
         {
@@ -509,7 +536,7 @@ namespace StockA
 
             //load real time search list
             sst = new SearchSt(logtxtBox, listView2, id, accno, accpw, this.km);
-            sst.request("  0003");
+            sst.request("  0006");
             sst.end();
 
         }
@@ -522,7 +549,7 @@ namespace StockA
 
             //load real time search list
             sst = new SearchSt(logtxtBox, listView2, id, accno, accpw, this.km);
-            sst.request("  0000");
+            sst.request("  0003");
             sst.end();
 
         }
@@ -564,6 +591,31 @@ namespace StockA
         {
             ProfitLoss pl = new ProfitLoss();
             pl.Show();
+
+        }
+
+        private void 당일매매ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //당일매매수익률 표시
+            if (!logged)
+            {
+                MessageBox.Show("로그인이 필요합니다");
+                return;
+            }
+            if (!lct.Visible)
+            {
+
+                lct.Show();
+                lct.Visible = true;
+
+                //OrderCur odc = new OrderCur(lsc.listView1, accno, accpw);
+                
+                string return_value = listView1.Items[0].SubItems[6].Text.Replace(",","");
+                logtxtBox.Text += return_value + Environment.NewLine;
+                CurrentTr ct = new CurrentTr(lct.listView1, accno, accpw, return_value);
+                ct.request();
+            }
+
 
         }
 
