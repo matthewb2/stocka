@@ -44,4 +44,12 @@ namespace StockA
 
     }
 
+
+    public class RetRec
+    {
+        public string[] rdate;
+        public string[] rret;
+
+    }
+
 }

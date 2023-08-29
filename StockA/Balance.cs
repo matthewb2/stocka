@@ -290,14 +290,11 @@ namespace StockA
         {
             this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
 
-            //string r1 = t0150.GetFieldData("t0150OutBlock", "mdamt", 0);
             string r12 = t0150.GetFieldData("t0150OutBlock", "mdadjamt", 0);
 
             this.output.Text += r12 + Environment.NewLine;
             int nCount = t0150.GetBlockCount("t0150OutBlock1");
-            //MessageBox.Show(nCount.ToString());
-
-
+            
         }
 
 
@@ -305,12 +302,8 @@ namespace StockA
         {
             this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
 
-            //string r1 = t0150.GetFieldData("t0150OutBlock", "mdamt", 0);
-            //string r12 = t0150.GetFieldData("t0150OutBlock", "mdadjamt", 0);
-
-            //this.output.Text += r1 + Environment.NewLine;
             int nCount = t0425.GetBlockCount("t0425OutBlock1");
-            MessageBox.Show(nCount.ToString());
+            //MessageBox.Show(nCount.ToString());
 
 
         }
@@ -348,14 +341,6 @@ namespace StockA
             //
             t0150.Request(false);
 
-            t0425.SetFieldData("t0425InBlock", "accno", 0, this.account_number);
-            t0425.SetFieldData("t0425InBlock", "passwd", 0, this.account_pwd);
-            //t0424.SetFieldData("t0424InBlock", "prcgb", 0, "1");
-            t0425.SetFieldData("t0425InBlock", "chegb", 0, "2");
-            //t0424.SetFieldData("t0424InBlock", "dangb", 0, "0");
-            //t0424.SetFieldData("t0424InBlock", "charge", 0, "0");
-            //t0424.SetFieldData("t0424InBlock", "cts_expcode", 0, "");
-            //t0425.Request(false);
         }
     }
 

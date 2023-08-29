@@ -60,7 +60,7 @@ namespace StockA
             {
                 //자동매매 시작
                 button1.PerformClick();
-                Thread.Sleep(100);
+                Thread.Sleep(300);
 
                 button2.PerformClick();
             }
@@ -192,15 +192,6 @@ namespace StockA
 
             listView2.SelectedIndexChanged += listView2_SelectedIndexChanged;
             logtxtBox.Text += getTime() + Environment.NewLine;
-
-            // 정해진 시각에 자동실행
-            //getTime()
-                
-            //getTime().Substring(0, 5) == "03:12"
-
-
-
-
 
         }
 
@@ -395,8 +386,6 @@ namespace StockA
             StockInfo si = new StockInfo(logtxtBox, listView2);
             si.request(listView2.Items[rowindex].SubItems[0].Text);
             
-
-
         }
 
         private void sellBucket()
@@ -419,7 +408,7 @@ namespace StockA
 
             }
         }
-
+        /*
         private void sell_0000()
         {
 
@@ -440,6 +429,7 @@ namespace StockA
 
             }
         }
+        */
         private void button2_Click(object sender, EventArgs e)
         {
             //자동매매시작
@@ -459,13 +449,13 @@ namespace StockA
             // 타이머 생성 및 시작
             myTimer2.Tick += new EventHandler(Timer2EventProcessor);
             myTimer2.Interval = 1000 * 60;
-            myTimer2.Start();
+            //myTimer2.Start();
 
             Thread.Sleep(3000);
             // 타이머 생성 및 시작
             myTimer3.Tick += new EventHandler(Timer3EventProcessor);
             myTimer3.Interval = 1000 * 60;
-            myTimer3.Start();
+            //myTimer3.Start();
 
             Thread.Sleep(3000);
             // 타이머 생성 및 시작
@@ -493,10 +483,11 @@ namespace StockA
             sst = new SearchSt(logtxtBox, listView2, id, accno, accpw, this.km);
             sst.request("  0000");
             sst.end();
-            
+            /*
             bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
             bl.request();
             bl.end();
+            */
         }
 
         private void Timer2EventProcessor(Object myObject,

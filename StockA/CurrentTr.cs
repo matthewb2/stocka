@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using XA_DATASETLib;
 using System.Drawing;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace StockA
 {
@@ -50,7 +52,10 @@ namespace StockA
 
         private void t0150OnReceiveData(string tr_code)
         {
-
+            //string listRet;
+            List<string> listRet = new List<string>();
+            List<string> listDate = new List<string>();
+            
             /*
             이베스트 서버에서 ReceiveData 이벤트 받으면 실행되는 event handler
             */
@@ -62,30 +67,88 @@ namespace StockA
             string r3 = this.Val_return;
             string r4 = t0150.GetFieldData("t0150OutBlock", "msamt", 0);
 
-            listView1.Items[0].SubItems[0].Text = string.Format("{0:N0}", Convert.ToInt32(r1));
-            listView1.Items[0].SubItems[1].Text = string.Format("{0:N0}", Convert.ToInt32(r2));
-            listView1.Items[0].SubItems[2].Text = string.Format("{0:N0}", Convert.ToInt32(r3));
-
-            int ret = Convert.ToInt32(this.Val_return);
-            int amount = Convert.ToInt32(r1);
-
-            double Val_return = (double)ret / (double)amount;
-            listView1.Items[0].SubItems[3].Text = string.Format("{0:00}%", (Val_return*100).ToString("0.00"));
-
-            listView1.Items[0].SubItems[4].Text = string.Format("{0:N0}", Convert.ToInt32(r4));
-
-            listView1.Items[0].UseItemStyleForSubItems = false;
-            if (Convert.ToInt32(r3) < 0)
+            if (r4 != null)
             {
-                listView1.Items[0].SubItems[2].ForeColor = Color.Blue;
-                listView1.Items[0].SubItems[3].ForeColor = Color.Blue;
-            }
-            else
-            {
-                listView1.Items[0].SubItems[2].ForeColor = Color.Red;
-                listView1.Items[0].SubItems[3].ForeColor = Color.Red;
+                listView1.Items[0].SubItems[0].Text = string.Format("{0:N0}", Convert.ToInt32(r1));
+                listView1.Items[0].SubItems[1].Text = string.Format("{0:N0}", Convert.ToInt32(r2));
+                listView1.Items[0].SubItems[2].Text = string.Format("{0:N0}", Convert.ToInt32(r3));
 
+                int ret = Convert.ToInt32(this.Val_return);
+                int amount = Convert.ToInt32(r1);
+
+                double Val_return = (double)ret / (double)amount * 100;
+
+                listView1.Items[0].SubItems[3].Text = string.Format("{0:00}%", Val_return.ToString("0.00"));
+                listView1.Items[0].SubItems[4].Text = string.Format("{0:N0}", Convert.ToInt32(r4));
+
+                listView1.Items[0].UseItemStyleForSubItems = false;
+                if (Convert.ToInt32(r3) < 0)
+                {
+                    listView1.Items[0].SubItems[2].ForeColor = Color.Blue;
+                    listView1.Items[0].SubItems[3].ForeColor = Color.Blue;
+                }
+                else
+                {
+                    listView1.Items[0].SubItems[2].ForeColor = Color.Red;
+                    listView1.Items[0].SubItems[3].ForeColor = Color.Red;
+
+                }
+
+                RetRec AtList = new RetRec();
+                string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+
+                using (StreamReader r = new StreamReader(path + @"\resultr.json"))
+                {
+                    string json = r.ReadToEnd();
+                    AtList = JsonConvert.DeserializeObject<RetRec>(json);
+
+                }
+
+                string listdate = DateTime.Now.ToString();
+
+                for (int j = 0; j < AtList.rdate.Length; j++)
+                {
+                    listDate.Add(AtList.rdate[j]);
+                    listRet.Add(AtList.rret[j]);
+
+                }
+                if (listDate[listRet.Count - 1] != listdate.Substring(0, 10)) {
+                    listDate.Add(listdate.Substring(0, 10));
+                    listRet.Add(Val_return.ToString("0.00"));
+                }
+                else {
+                    //add the data of today to the end
+                    listRet[listRet.Count - 1] = Val_return.ToString("0.00");
+                    listDate[listRet.Count - 1] = listdate.Substring(0, 10);
+                }
+                try
+                {
+                    //
+                    JObject sonSpec = new JObject(
+                        new JProperty("rdate", listDate),
+                        new JProperty("rret", listRet)
+
+                        );
+
+                    if (!File.Exists(path + @"\resultr.json"))
+                    {
+                        using (FileStream fs = File.Create(path + @"\resultr.json"))
+                        {
+                            byte[] info = new UTF8Encoding(true).GetBytes(sonSpec.ToString());
+                            fs.Write(info, 0, info.Length);
+                        }
+                    }
+                    else File.WriteAllText(path + @"\resultr.json", sonSpec.ToString());
+
+
+
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
             }
+
 
         }
         public void end()
