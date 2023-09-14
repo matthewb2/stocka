@@ -83,6 +83,31 @@ namespace StockA
 
             return AuthorList;
         }
+        public string convertSN(string code)
+        {
+            string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+
+            StreamReader sr = new StreamReader(path+@"\stocklist.csv", Encoding.GetEncoding("ks_c_5601-1987"));
+            //
+            Dictionary<string, string> nameToCode = new Dictionary<string, string>();
+            string sName = "";
+            while (!sr.EndOfStream)
+            {
+                string line = sr.ReadLine();
+                string[] data = line.Split(',');
+
+                nameToCode.Add(data[0], data[1]);
+
+            }
+            foreach (KeyValuePair<string, string> kvp in nameToCode)
+            {
+                if (kvp.Key == code)
+                    sName = kvp.Value;
+            }
+
+            return sName;
+        }
+
         private void OnReceiveData(string tr_code)
         {
             //get a stock list
@@ -93,7 +118,6 @@ namespace StockA
             this.keyVal = t1857.GetFieldData("t1857OutBlock", "AlertNum", 0);
 
             this.output.Text += String.Format("검색된 종목수 => {0}", r1) + Environment.NewLine;
-            //this.output.Text += String.Format("API Key =>  {0}", this.keyVal) + Environment.NewLine;
 
             int nCount = Convert.ToInt32(r1);
             getBucketItem();
@@ -101,6 +125,8 @@ namespace StockA
             string shcode, hname, price;
 
             List<string> listScode = new List<string>();
+
+
             if (nCount > 0)
             {
                 for (int i = 0; i < nCount; i++)
@@ -110,18 +136,12 @@ namespace StockA
                     hname = t1857.GetFieldData("t1857OutBlock1", "hname", i);
                     price = t1857.GetFieldData("t1857OutBlock1", "price", i);
 
-
-                    //검색 종목을 파일로 출력
-
                     //check if the stock exist in a bucket
                     // 보유종목 리스트에 있으면 제외
                     Bucket bucketItem = getBucketItem();
                     bool isBucket = false;
-
-                    
                     for(int j=0; j<bucketItem.scode.Length; j++)
                     {
-
                         if (shcode == bucketItem.scode[j])
                         {
                             isBucket = true;
@@ -129,11 +149,10 @@ namespace StockA
                         }
 
                     }
+                    //important
                     //미체결 주문 목록에 있으면 제외
                     
                     Pendst pendItem = getPendItem();
-                    
-
                     for (int j = 0; j < pendItem.scode.Length; j++)
                     {
 
@@ -152,6 +171,8 @@ namespace StockA
                         int qnt = this.km / Convert.ToInt32(price);
                         if (shcode != null && shcode != "")
                         {
+                            this.output.Text += String.Format("[{0}] {1} {2}주 매수 주문", DateTime.Now.ToString("hh:mm:ss tt"), convertSN(shcode), qnt) + Environment.NewLine;
+                            //
                             Order od = new Order(this.output, this.acc_number, this.acc_pwd);
                             od.request(shcode, price, "2", qnt.ToString());
                             Thread.Sleep(200);

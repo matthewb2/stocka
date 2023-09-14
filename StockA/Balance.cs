@@ -80,8 +80,6 @@ namespace StockA
             이베스트 서버에서 ReceiveData 이벤트 받으면 실행되는 event handler
             */
 
-           
-
             this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
 
             int c1 = Convert.ToInt32(CSPAQ12300.GetFieldData("CSPAQ12300OutBlock2", "DpsastTotamt", 0));
@@ -89,9 +87,6 @@ namespace StockA
             string c3 = CSPAQ12300.GetFieldData("CSPAQ12300OutBlock2", "D2Dps", 0);
             string c4 = CSPAQ12300.GetFieldData("CSPAQ12300OutBlock2", "PnlRat", 0);
 
-            //this.output.Text += String.Format("t0424 => {0} {1} {2} {3}", c1, c2, c3, c4) + Environment.NewLine;
-
-            //this.balance_sheet.Items[0].SubItems[7].Text = string.Format("{0:0,0}", c1);
             this.balance_sheet.Items[0].SubItems[7].Text = string.Format("{0:#,0}", Convert.ToInt32(c2));
             this.balance_sheet.Items[0].SubItems[8].Text = string.Format("{0:#,0}", Convert.ToInt32(c3));
             this.balance_sheet.Items[0].SubItems[4].Text = string.Format("{0:0.00}", float.Parse(c4)*100);
@@ -184,7 +179,7 @@ namespace StockA
             {
                 s1 = t0424.GetFieldData("t0424OutBlock1", "expcode", i); //종목번호
 
-                s2 = t0424.GetFieldData("t0424OutBlock1", "hname", i); //종목번호
+                s2 = t0424.GetFieldData("t0424OutBlock1", "hname", i); 
                 s3 = t0424.GetFieldData("t0424OutBlock1", "price", i); //현재가
 
                 
@@ -303,9 +298,7 @@ namespace StockA
             this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
 
             int nCount = t0425.GetBlockCount("t0425OutBlock1");
-            //MessageBox.Show(nCount.ToString());
-
-
+            
         }
 
         public void end()

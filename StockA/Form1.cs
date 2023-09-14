@@ -37,10 +37,11 @@ namespace StockA
 
         public Item items;
         public static string id;
-        string password, accno, accpw;
+        public string password, accno, accpw;
         
-        SearchSt sst;
-        public int profit, loss, km;
+        
+        public float profit, loss;
+        public int km;
         public QuickOrd qo;
         public ListCurSt lsc;
         public ListCurTr lct = new ListCurTr();
@@ -49,12 +50,15 @@ namespace StockA
         public string ordermethod;
         Balance bl;
 
+        TermRet tr = new TermRet();
+        About ab = new About();
+        SearchSt sst;
+
 
 
         private void TimerEventDay(Object myObject,
                                                 EventArgs myEventArgs)
         {
-            //Console.WriteLine(getTime().Substring(0, 5));
             logtxtBox.Text += getTime() + Environment.NewLine;
             if (getTime().Substring(0, 5) == "09:00" && getTime().Substring(9, 2) == "오전")
             {
@@ -65,7 +69,7 @@ namespace StockA
                 button2.PerformClick();
             }
 
-            if (getTime().Substring(0, 5) == "03:12" && getTime().Substring(9, 2) == "오후")
+            if (getTime().Substring(0, 5) == "03:05" && getTime().Substring(9, 2) == "오후")
             {
                 //0000 stop
                 myTimer.Stop();
@@ -81,9 +85,6 @@ namespace StockA
         public Form1()
         {
             InitializeComponent();
-
-            
-            //MessageBox.Show(getTime().Substring(9, 2));
 
             // 타이머 생성 및 시작
             dayTimer.Tick += new EventHandler(TimerEventDay);
@@ -109,10 +110,8 @@ namespace StockA
             logtxtBox.Text += this.ordermethod + Environment.NewLine;
             logtxtBox.Text += this.km + Environment.NewLine;
 
-            float yield = this.profit;
-            float negative = this.loss;
 
-            logtxtBox.Text += String.Format("{0} {1}", yield, negative) + Environment.NewLine;
+            logtxtBox.Text += String.Format("{0} {1}", this.profit, this.loss) + Environment.NewLine;
 
             //간단주문 준비
             qo = new QuickOrd(logtxtBox, accno, accno);
@@ -193,6 +192,7 @@ namespace StockA
             listView2.SelectedIndexChanged += listView2_SelectedIndexChanged;
             logtxtBox.Text += getTime() + Environment.NewLine;
 
+            sst = new SearchSt(logtxtBox, listView2, id, accno, accpw, this.km);
         }
 
 
@@ -273,7 +273,22 @@ namespace StockA
 
             if (conn)
                 ((XA_SESSIONLib.IXASession)session).Login(textBox4.Text, textBox2.Text, "", 0, false);
+
+            //save logs
+            string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+            string filename = path + @"\trade_" + DateTime.Now.ToString("yyyy_MM_dd") + ".log";
             
+            try
+            {
+                if (!File.Exists(filename))
+                    File.Create(filename);
+            }
+            catch
+            {
+                MessageBox.Show("failed");
+            }
+
+
         }
 
         private void XASession_Login(string szCode, string szMsg)
@@ -299,14 +314,36 @@ namespace StockA
             
 
         }
+        public string convertSN(string code)
+        {
+            StreamReader sr = new StreamReader("stocklist.csv", Encoding.GetEncoding("ks_c_5601-1987"));
+            //
+            Dictionary<string, string> nameToCode = new Dictionary<string, string>();
+            string sName = "";
+            while (!sr.EndOfStream)
+            {
+                string line = sr.ReadLine();
+                string[] data = line.Split(',');
+
+                nameToCode.Add(data[0], data[1]);
+
+            }
+            foreach (KeyValuePair<string, string> kvp in nameToCode)
+            {
+                if (kvp.Key == code)
+                    sName = kvp.Value;
+            }
+
+            return sName;
+        }
+
         private void sellAll0000()
         {
             Order od = new Order(logtxtBox, this.accno, this.accpw);
 
             Bucket bucketItem = getBucketItem();
             Extra extraItem = getExtraItem();
-            //bool isBucket = false;
-
+            
             for (int i = 0; i < extraItem.scode.Length; i++)
             {
                 for (int j = 0; j < bucketItem.scode.Length; j++)
@@ -315,12 +352,12 @@ namespace StockA
                     if (extraItem.scode[i] == bucketItem.scode[j])
                     {
                         //매도실행
-                        Console.WriteLine(extraItem.scode[i]);
+                        logtxtBox.Text += String.Format("[{0}] {1} {2}주 매도 주문", DateTime.Now.ToString("hh:mm:ss tt"), convertSN(bucketItem.scode[j]), bucketItem.sqnt[j]) + Environment.NewLine;
+                        //
                         od.request(bucketItem.scode[j], bucketItem.sprice[j], "1", bucketItem.sqnt[j]); //1 sell
-                        Thread.Sleep(100);
+                        Thread.Sleep(300);
                         od.end();
-                        break;
-
+                      
                     }
 
                 }
@@ -329,6 +366,8 @@ namespace StockA
         
         private void button4_Click(object sender, EventArgs e)
         {
+            
+
             myTimer.Stop();
             //
             if (running)
@@ -388,11 +427,29 @@ namespace StockA
             
         }
 
+        public Pendst getPendItem()
+        {
+            Pendst AuthorList = new Pendst();
+            string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+
+            using (StreamReader r = new StreamReader(path + @"\pendst.json"))
+            {
+                string json = r.ReadToEnd();
+                AuthorList = JsonConvert.DeserializeObject<Pendst>(json);
+            }
+
+            return AuthorList;
+        }
+
+
         private void sellBucket()
         {
             
             float yield = this.profit;
             float negative = this.loss;
+            //important
+            bl.request();
+
             Bucket bucketItem = getBucketItem();
 
             for (int j = 0; j < bucketItem.scode.Length - 1; j++)
@@ -402,34 +459,36 @@ namespace StockA
                 if (ret > yield || ret < negative)
                 {
                     Order od = new Order(logtxtBox, accno, accpw);
-                    var t = new Thread(() => RealStart(od, bucketItem.scode[j], bucketItem.sprice[j], bucketItem.sqnt[j]));
-                    t.Start();
+                    //var t = new Thread(() => RealStart(od, bucketItem.scode[j], bucketItem.sprice[j], bucketItem.sqnt[j]));
+                    //t.Start();
+                    //미체결 주문 목록에 있으면 제외
+
+                    Pendst pendItem = getPendItem();
+                    bool isBucket = false;
+                    for (int i = 0; i < pendItem.scode.Length; i++)
+                    {
+
+                        if (bucketItem.scode[j] == pendItem.scode[i])
+                        {
+                            isBucket = true;
+                            break;
+                        }
+
+                    }
+                    if (!isBucket)
+                    {
+                        //매도실행
+                        logtxtBox.Text += String.Format("[{0}] {1} {2}주 매도 주문", DateTime.Now.ToString("hh:mm:ss tt"), convertSN(bucketItem.scode[j]), bucketItem.sqnt[j]) + Environment.NewLine;
+
+                        od.request(bucketItem.scode[j], bucketItem.sprice[j], "1", bucketItem.sqnt[j]);
+                        Thread.Sleep(300);
+                        od.end();
+                    }
                 }
 
             }
+
         }
-        /*
-        private void sell_0000()
-        {
-
-            float yield = this.profit;
-            float negative = this.loss;
-            Bucket bucketItem = getBucketItem();
-
-            for (int j = 0; j < bucketItem.scode.Length - 1; j++)
-            {
-
-                float ret = float.Parse(bucketItem.sret[j]);
-                if (ret > yield || ret < negative)
-                {
-                    Order od = new Order(logtxtBox, accno, accpw);
-                    var t = new Thread(() => RealStart(od, bucketItem.scode[j], bucketItem.sprice[j], bucketItem.sqnt[j]));
-                    t.Start();
-                }
-
-            }
-        }
-        */
         private void button2_Click(object sender, EventArgs e)
         {
             //자동매매시작
@@ -449,13 +508,13 @@ namespace StockA
             // 타이머 생성 및 시작
             myTimer2.Tick += new EventHandler(Timer2EventProcessor);
             myTimer2.Interval = 1000 * 60;
-            //myTimer2.Start();
+            myTimer2.Start();
 
             Thread.Sleep(3000);
             // 타이머 생성 및 시작
             myTimer3.Tick += new EventHandler(Timer3EventProcessor);
             myTimer3.Interval = 1000 * 60;
-            //myTimer3.Start();
+            myTimer3.Start();
 
             Thread.Sleep(3000);
             // 타이머 생성 및 시작
@@ -478,16 +537,22 @@ namespace StockA
             
             //익절 또는 손절 조건을 만족하는 보유주식 매도
             sellBucket();
-            
+
             //load real time search list
-            sst = new SearchSt(logtxtBox, listView2, id, accno, accpw, this.km);
+            //sst = new SearchSt(logtxtBox, listView2, id, accno, accpw, this.km);
+
+            PendStock ps = new PendStock(accno, accpw);
+            ps.request();
+            ps.end();
+            Thread.Sleep(100);
+
             sst.request("  0000");
             sst.end();
-            /*
-            bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
+            
+            //bl = new Balance(logtxtBox, listView1, listView2, this.accno, this.accpw);
             bl.request();
             bl.end();
-            */
+            
         }
 
         private void Timer2EventProcessor(Object myObject,
@@ -497,10 +562,14 @@ namespace StockA
             sellBucket();
             
             //load real time search list
-            sst = new SearchSt(logtxtBox, listView2, id, accno, accpw, this.km);
+            //sst = new SearchSt(logtxtBox, listView2, id, accno, accpw, this.km);
             sst.request("  0001");
             sst.end();
-            
+
+            bl.request();
+            bl.end();
+
+
         }
 
 
@@ -559,6 +628,34 @@ namespace StockA
             //timer.Stop();
             button3.Enabled = false;
             button2.Enabled = true;
+            //
+            //save logs
+            string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+            string filename = path + @"\trade_" + DateTime.Now.ToString("yyyy_MM_dd") + ".log";
+            //Console.WriteLine(logtxtBox.Text);
+            try
+            {
+                if (File.Exists(filename))
+                {
+                    //writes to file
+                    System.IO.File.WriteAllText(filename, logtxtBox.Text);
+                }
+                else
+                {
+                    // Create the file.
+                    using (FileStream fs = File.Create(filename))
+                    {
+                        System.IO.File.WriteAllText(filename, logtxtBox.Text);
+                    }
+
+                }
+            }
+            catch
+            {
+                MessageBox.Show("failed");
+            }
+
+
         }
 
         private void 간단주문ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -610,14 +707,19 @@ namespace StockA
 
         }
 
-        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
-        {
 
+        private void 기간손익ToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            string return_value = listView1.Items[0].SubItems[6].Text.Replace(",", "");
+            CurrentTr ct = new CurrentTr(lct.listView1, accno, accpw, return_value);
+            ct.request();
+            tr.Invalidate();
+            tr.Show();
         }
 
         private void 정보ToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            About ab = new About();
+            
                 ab.Show();
         }
 

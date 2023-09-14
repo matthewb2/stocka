@@ -16,8 +16,8 @@ namespace StockA
         public int temp;
         public string method;
         public int km;
-        public int profitrate;
-        public int lossrate;
+        public float profitrate;
+        public float lossrate;
         public bool vcc;
         public bool vcc2;
     }
@@ -49,6 +49,8 @@ namespace StockA
     {
         public string[] rdate;
         public string[] rret;
+        public string[] rmat;
+        public string[] mdmat;
 
     }
 

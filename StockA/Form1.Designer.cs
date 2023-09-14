@@ -37,6 +37,7 @@ namespace StockA
             this.주문내역확인ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.도움말ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.잔고내역확인ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.당일매매ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.도움말ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.정보ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -62,7 +63,7 @@ namespace StockA
             this.listView1 = new System.Windows.Forms.ListView();
             this.listView2 = new System.Windows.Forms.ListView();
             this.logtxtBox = new System.Windows.Forms.RichTextBox();
-            this.당일매매ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.기간손익ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -113,14 +114,14 @@ namespace StockA
             // 간단주문ToolStripMenuItem
             // 
             this.간단주문ToolStripMenuItem.Name = "간단주문ToolStripMenuItem";
-            this.간단주문ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.간단주문ToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.간단주문ToolStripMenuItem.Text = "간단주문";
             this.간단주문ToolStripMenuItem.Click += new System.EventHandler(this.간단주문ToolStripMenuItem_Click);
             // 
             // 주문내역확인ToolStripMenuItem
             // 
             this.주문내역확인ToolStripMenuItem.Name = "주문내역확인ToolStripMenuItem";
-            this.주문내역확인ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.주문내역확인ToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.주문내역확인ToolStripMenuItem.Text = "주문내역확인";
             this.주문내역확인ToolStripMenuItem.Click += new System.EventHandler(this.주문내역확인ToolStripMenuItem_Click);
             // 
@@ -128,6 +129,7 @@ namespace StockA
             // 
             this.도움말ToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.잔고내역확인ToolStripMenuItem,
+            this.기간손익ToolStripMenuItem,
             this.당일매매ToolStripMenuItem});
             this.도움말ToolStripMenuItem1.Name = "도움말ToolStripMenuItem1";
             this.도움말ToolStripMenuItem1.Size = new System.Drawing.Size(43, 20);
@@ -139,6 +141,13 @@ namespace StockA
             this.잔고내역확인ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.잔고내역확인ToolStripMenuItem.Text = "잔고내역확인";
             this.잔고내역확인ToolStripMenuItem.Click += new System.EventHandler(this.정보ToolStripMenuItem_Click);
+            // 
+            // 당일매매ToolStripMenuItem
+            // 
+            this.당일매매ToolStripMenuItem.Name = "당일매매ToolStripMenuItem";
+            this.당일매매ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.당일매매ToolStripMenuItem.Text = "당일매매";
+            this.당일매매ToolStripMenuItem.Click += new System.EventHandler(this.당일매매ToolStripMenuItem_Click);
             // 
             // 도움말ToolStripMenuItem
             // 
@@ -173,7 +182,6 @@ namespace StockA
             this.splitContainer1.Panel2.Controls.Add(this.logtxtBox);
             this.splitContainer1.Panel2.Margin = new System.Windows.Forms.Padding(3);
             this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(5);
-            this.splitContainer1.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel2_Paint);
             this.splitContainer1.Size = new System.Drawing.Size(1074, 584);
             this.splitContainer1.SplitterDistance = 358;
             this.splitContainer1.TabIndex = 1;
@@ -418,12 +426,12 @@ namespace StockA
             this.logtxtBox.TabIndex = 0;
             this.logtxtBox.Text = "";
             // 
-            // 당일매매ToolStripMenuItem
+            // 기간손익ToolStripMenuItem
             // 
-            this.당일매매ToolStripMenuItem.Name = "당일매매ToolStripMenuItem";
-            this.당일매매ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.당일매매ToolStripMenuItem.Text = "당일매매";
-            this.당일매매ToolStripMenuItem.Click += new System.EventHandler(this.당일매매ToolStripMenuItem_Click);
+            this.기간손익ToolStripMenuItem.Name = "기간손익ToolStripMenuItem";
+            this.기간손익ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.기간손익ToolStripMenuItem.Text = "기간손익";
+            this.기간손익ToolStripMenuItem.Click += new System.EventHandler(this.기간손익ToolStripMenuItem_Click_1);
             // 
             // Form1
             // 
@@ -494,6 +502,7 @@ namespace StockA
         private System.Windows.Forms.ToolStripMenuItem 도움말ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 정보ToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem 당일매매ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 기간손익ToolStripMenuItem;
     }
 }
 

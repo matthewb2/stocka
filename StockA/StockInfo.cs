@@ -63,7 +63,6 @@ namespace StockA
             else
                 this.output.SelectionColor = Color.Red;
 
-            //this.output.SelectionColor = Color.Black;
             this.output.AppendText(String.Format(r4) + Environment.NewLine);
             this.output.SelectionColor = Color.Black;
 

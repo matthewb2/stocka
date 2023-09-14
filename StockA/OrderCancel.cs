@@ -1,16 +1,16 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using XA_DATASETLib;
 using System.Windows.Forms;
-using System.IO;
-using Newtonsoft.Json.Linq;
+using XA_DATASETLib;
+using System.Drawing;
 
 namespace StockA
 {
-    class PendStock
+    class OrderCancel
     {
         private XAQueryClass t0425;
 
@@ -20,9 +20,33 @@ namespace StockA
         public string account_pwd;
 
 
+        public ListView listView1;
 
-        public PendStock(string accno, string accpw)
+        public string convertSN(string code)
         {
+            StreamReader sr = new StreamReader("stocklist.csv", Encoding.GetEncoding("ks_c_5601-1987"));
+            //
+            Dictionary<string, string> nameToCode = new Dictionary<string, string>();
+            string sName = "";
+            while (!sr.EndOfStream)
+            {
+                string line = sr.ReadLine();
+                string[] data = line.Split(',');
+
+                nameToCode.Add(data[0], data[1]);
+
+            }
+            foreach (KeyValuePair<string, string> kvp in nameToCode)
+            {
+                if (kvp.Key == code)
+                    sName = kvp.Value;
+            }
+
+            return sName;
+        }
+        public OrderCancel(ListView cur_sheet, string accno, string accpw)
+        {
+            listView1 = cur_sheet;
 
             this.is_data_received = false;
 
@@ -49,11 +73,12 @@ namespace StockA
             int nCount = t0425.GetBlockCount("t0425OutBlock1");
             string ord_no, ord_code, ord_name, ord_side, org_qty, ord_price, done_price, done_qty, ord_time;
 
-            List<string> listCode = new List<string>();
-            List<string> listQty = new List<string>();
+            listView1.Items.Clear();
 
             for (int i = 0; i < nCount; i++)
             {
+                var row1 = new ListViewItem(new[] { "", "", "", "", "", "", "" });
+                listView1.Items.Add(row1);
 
 
                 ord_no = t0425.GetFieldData("t0425OutBlock1", "ordno", i); //주문번호        
@@ -66,39 +91,29 @@ namespace StockA
                 done_qty = t0425.GetFieldData("t0425OutBlock1", "cheqty", i); //체결수량
                 ord_time = t0425.GetFieldData("t0425OutBlock1", "ordtime", i); //주문시각
 
-                listCode.Add(ord_code);
-                listQty.Add(done_qty);
-                
-            }
+                ord_time = ord_time.Substring(0, 2) + ":" + ord_time.Substring(2, 2) + ":" + ord_time.Substring(4, 2);
 
+                listView1.Items[i].SubItems[0].Text = string.Format(ord_no);
+                listView1.Items[i].SubItems[1].Text = string.Format("{0:0,0}", ord_code);
+                listView1.Items[i].SubItems[2].Text = string.Format(convertSN(ord_code));
+                listView1.Items[i].SubItems[3].Text = string.Format(ord_side);
+                listView1.Items[i].SubItems[4].Text = string.Format("{0:0,0}", done_qty);
+                listView1.Items[i].SubItems[5].Text = string.Format("{0:0,0}", org_qty);
+                listView1.Items[i].SubItems[6].Text = ord_time;
 
-            try
-            {
-                string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-                //
-                JObject sonSpec = new JObject(
-                    new JProperty("scode", listCode.ToArray()),
-                    new JProperty("sqry", listQty.ToArray())
-                    
-                    );
-
-
-
-                if (!File.Exists(path + @"\pendst.json"))
+                listView1.Items[i].UseItemStyleForSubItems = false;
+                if (ord_side == "매도")
                 {
-                    using (FileStream fs = File.Create(path + @"\pendst.json"))
-                    {
-                        byte[] info = new UTF8Encoding(true).GetBytes(sonSpec.ToString());
-                        fs.Write(info, 0, info.Length);
-                    }
+                    listView1.Items[i].SubItems[3].ForeColor = Color.Blue;
                 }
-                else File.WriteAllText(path + @"\pendst.json", sonSpec.ToString());
+                else
+                {
+                    listView1.Items[i].SubItems[3].ForeColor = Color.Red;
+
+                }
 
             }
-            catch (Exception exp)
-            {
-                Console.Write(exp.Message);
-            }
+
 
 
 
@@ -118,7 +133,7 @@ namespace StockA
             t0425.SetFieldData("t0425InBlock", "accno", 0, this.account_number);
             t0425.SetFieldData("t0425InBlock", "passwd", 0, this.account_pwd);
             t0425.SetFieldData("t0425InBlock", "expcode", 0, ""); //종목번호 or blank(all)
-            t0425.SetFieldData("t0425InBlock", "chegb", 0, "2"); //미체결 :'2' 체결: '1' 전체:'0'
+            t0425.SetFieldData("t0425InBlock", "chegb", 0, "0"); //미체결 :'?' 체결: '1' 전체:'0'
             t0425.SetFieldData("t0425InBlock", "medosu", 0, "0"); //매매구분
             t0425.SetFieldData("t0425InBlock", "sortgb", 0, "2");
             //tr요청
@@ -127,3 +142,4 @@ namespace StockA
         }
     }
 }
+
