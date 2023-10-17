@@ -80,8 +80,10 @@ namespace StockA
 
                 int ret = Convert.ToInt32(this.Val_return);
                 int amount = Convert.ToInt32(r1);
-
-                double retn = (double)ret / (double)amount * 100;
+                double retn;
+                if (ret == 0)
+                    retn = 0.00;
+                else retn = (double)ret / (double)amount * 100; 
 
                 listView1.Items[0].SubItems[3].Text = string.Format("{0:00}%", retn.ToString("0.00"));
                 
@@ -132,29 +134,32 @@ namespace StockA
                     listMat[listRet.Count - 1] = this.Val_return;
                     listMdmat[listRet.Count - 1] = r1;
                 }
-                try
+                if (r1 != "0")
                 {
-                    JObject sonSpec = new JObject(
-                        new JProperty("rdate", listDate),
-                        new JProperty("rret", listRet),
-                        new JProperty("rmat", listMat),
-                        new JProperty("mdmat", listMdmat)
-                        );
-
-                    if (!File.Exists(path + @"\resultr.json"))
+                    try
                     {
-                        using (FileStream fs = File.Create(path + @"\resultr.json"))
-                        {
-                            byte[] info = new UTF8Encoding(true).GetBytes(sonSpec.ToString());
-                            fs.Write(info, 0, info.Length);
-                        }
-                    }
-                    else File.WriteAllText(path + @"\resultr.json", sonSpec.ToString());
+                        JObject sonSpec = new JObject(
+                            new JProperty("rdate", listDate),
+                            new JProperty("rret", listRet),
+                            new JProperty("rmat", listMat),
+                            new JProperty("mdmat", listMdmat)
+                            );
 
-                }
-                catch (Exception exp)
-                {
-                    Console.Write(exp.Message);
+                        if (!File.Exists(path + @"\resultr.json"))
+                        {
+                            using (FileStream fs = File.Create(path + @"\resultr.json"))
+                            {
+                                byte[] info = new UTF8Encoding(true).GetBytes(sonSpec.ToString());
+                                fs.Write(info, 0, info.Length);
+                            }
+                        }
+                        else File.WriteAllText(path + @"\resultr.json", sonSpec.ToString());
+
+                    }
+                    catch (Exception exp)
+                    {
+                        Console.Write(exp.Message);
+                    }
                 }
             }
 

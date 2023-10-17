@@ -281,7 +281,11 @@ namespace StockA
             try
             {
                 if (!File.Exists(filename))
-                    File.Create(filename);
+                {
+                    //File.Create(filename);
+                    var myFile = File.Create(filename);
+                    myFile.Close();
+                }
             }
             catch
             {
@@ -316,7 +320,8 @@ namespace StockA
         }
         public string convertSN(string code)
         {
-            StreamReader sr = new StreamReader("stocklist.csv", Encoding.GetEncoding("ks_c_5601-1987"));
+            string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+            StreamReader sr = new StreamReader(path+@"\stocklist.csv", Encoding.GetEncoding("ks_c_5601-1987"));
             //
             Dictionary<string, string> nameToCode = new Dictionary<string, string>();
             string sName = "";
@@ -710,6 +715,12 @@ namespace StockA
 
         private void 기간손익ToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
+            //당일매매수익률 표시
+            if (!logged)
+            {
+                MessageBox.Show("로그인이 필요합니다");
+                return;
+            }
             string return_value = listView1.Items[0].SubItems[6].Text.Replace(",", "");
             CurrentTr ct = new CurrentTr(lct.listView1, accno, accpw, return_value);
             ct.request();

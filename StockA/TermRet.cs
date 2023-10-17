@@ -57,10 +57,9 @@ namespace StockA
 
             for (int j = AuthorList.rdate.Length-1; j >=0; j--)
             {
+                var row = new ListViewItem(new[] { AuthorList.rdate[j], string.Format("{0:N0}", Convert.ToInt32(AuthorList.rmat[j])), AuthorList.rret[j] + "%", string.Format("{0:N0}", Convert.ToInt32(AuthorList.mdmat[j])) });
                 
-                var row = new ListViewItem(new[] { AuthorList.rdate[j], string.Format("{0:N0}", Convert.ToInt32(AuthorList.rmat[j])), AuthorList.rret[j]+"%", string.Format("{0:N0}", Convert.ToInt32(AuthorList.mdmat[j])) });
                 listView1.Items.Add(row);
-
             }
 
 

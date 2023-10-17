@@ -57,8 +57,6 @@ namespace StockA
             //
             t0424.ReceiveData += t0424OnReceiveData;
             CSPAQ12300.ReceiveData += CSPAQ12300OnReceiveData;
-            t0150.ReceiveData += t0150OnReceiveData;
-            t0425.ReceiveData += t0425OnReceiveData;
 
             this.keyVal = "";
             
@@ -80,7 +78,7 @@ namespace StockA
             이베스트 서버에서 ReceiveData 이벤트 받으면 실행되는 event handler
             */
 
-            this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
+            //this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
 
             int c1 = Convert.ToInt32(CSPAQ12300.GetFieldData("CSPAQ12300OutBlock2", "DpsastTotamt", 0));
             string c2 = CSPAQ12300.GetFieldData("CSPAQ12300OutBlock2", "D1Dps", 0);
@@ -92,14 +90,9 @@ namespace StockA
             this.balance_sheet.Items[0].SubItems[4].Text = string.Format("{0:0.00}", float.Parse(c4)*100);
             this.balance_sheet.Items[0].UseItemStyleForSubItems = false;
             if (float.Parse(c4) < 0)
-            {
                 this.balance_sheet.Items[0].SubItems[4].ForeColor = Color.Blue;
-            }
-            else
-            {
+            if (float.Parse(c4) > 0)
                 this.balance_sheet.Items[0].SubItems[4].ForeColor = Color.Red;
-
-            }
 
 
         }
@@ -109,7 +102,7 @@ namespace StockA
             /*
             이베스트 서버에서 ReceiveData 이벤트 받으면 실행되는 event handler
             */
-            this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
+            //this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
 
             string r1 = t0424.GetFieldData("t0424OutBlock", "sunamt", 0);  //추정순자산
             string r2 = t0424.GetFieldData("t0424OutBlock", "tappamt", 0); //평가금액
@@ -132,23 +125,16 @@ namespace StockA
             
             this.balance_sheet.Items[0].UseItemStyleForSubItems = false;
             if (Convert.ToInt32(r3) < 0)
-            {
                 this.balance_sheet.Items[0].SubItems[3].ForeColor = Color.Blue;
-            }
-            else
-            {
+
+            if (Convert.ToInt32(r3) > 0)
                 this.balance_sheet.Items[0].SubItems[3].ForeColor = Color.Red;
 
-            }
             if (Convert.ToInt32(r4) < 0)
-            {
                 this.balance_sheet.Items[0].SubItems[6].ForeColor = Color.Blue;
-            }
-            else
-            {
-                this.balance_sheet.Items[0].SubItems[6].ForeColor = Color.Red;
 
-            }
+            if (Convert.ToInt32(r4) > 0)
+                this.balance_sheet.Items[0].SubItems[6].ForeColor = Color.Red;
             //            
 
             for (int i = 0; i < this.balance_sheet.Columns.Count; i++)
@@ -178,18 +164,13 @@ namespace StockA
             for (int i = 0; i < nCount; i++)
             {
                 s1 = t0424.GetFieldData("t0424OutBlock1", "expcode", i); //종목번호
-
                 s2 = t0424.GetFieldData("t0424OutBlock1", "hname", i); 
                 s3 = t0424.GetFieldData("t0424OutBlock1", "price", i); //현재가
-
-                
                 s5 = t0424.GetFieldData("t0424OutBlock1", "janqty", i); //잔고수량
                 p1 = Int32.Parse(t0424.GetFieldData("t0424OutBlock1", "mamt", i)); //매입금액
                 p2 = Int32.Parse(t0424.GetFieldData("t0424OutBlock1", "appamt", i)); //평가금액
-
                 p3 = Int32.Parse(t0424.GetFieldData("t0424OutBlock1", "dtsunik", i)); //평가손익
                 p4 = t0424.GetFieldData("t0424OutBlock1", "sunikrt", i); //평가수익률
-
                 s4 = t0424.GetFieldData("t0424OutBlock1", "pamt", i); //평균단가
                 
                 if (p4 == "0.")
@@ -210,23 +191,13 @@ namespace StockA
                 this.stocks.Items[i].SubItems[7].Text = p4;
                 this.stocks.Items[i].UseItemStyleForSubItems = false;
                 if (Convert.ToInt32(p3) < 0)
-                {
                     this.stocks.Items[i].SubItems[6].ForeColor = Color.Blue;
-                }
-                else
-                {
+                if (Convert.ToInt32(p3) > 0)
                     this.stocks.Items[i].SubItems[6].ForeColor = Color.Red;
-
-                }
                 if (float.Parse(p4) < 0)
-                { 
                     this.stocks.Items[i].SubItems[7].ForeColor = Color.Blue;
-                }
-                else
-                {
+                if (float.Parse(p4) > 0)
                     this.stocks.Items[i].SubItems[7].ForeColor = Color.Red;
-
-                }
                 //
                 listScode.Add(s1);
                 listRate.Add(p4);
@@ -245,8 +216,6 @@ namespace StockA
                     new JProperty("sqnt", listQnt.ToArray()),
                     new JProperty("sprice", listPrice.ToArray())
                     );
-
-
 
                 if (!File.Exists(path + @"\bucket.json"))
                 {
@@ -275,35 +244,14 @@ namespace StockA
             if (nCount == 0)
                 this.output.Text += String.Format("{ 'error':{ 'message':'order failed'} }") + Environment.NewLine;
             
-
             is_data_received = true;
 
-        }
-
-
-        private void t0150OnReceiveData(string tr_code)
-        {
-            this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
-
-            string r12 = t0150.GetFieldData("t0150OutBlock", "mdadjamt", 0);
-
-            this.output.Text += r12 + Environment.NewLine;
-            int nCount = t0150.GetBlockCount("t0150OutBlock1");
-            
-        }
-
-
-        private void t0425OnReceiveData(string tr_code)
-        {
-            this.output.Text += String.Format("TR code => {0}", tr_code) + Environment.NewLine;
-
-            int nCount = t0425.GetBlockCount("t0425OutBlock1");
-            
         }
 
         public void end()
         {
             t0424.RemoveService("t0424", this.keyVal);
+            CSPAQ12300.RemoveService("CSPAQ12300", this.keyVal);
         }
 
         public void request()
@@ -328,11 +276,6 @@ namespace StockA
 
             //tr요청
             CSPAQ12300.Request(false);
-            //
-            t0150.SetFieldData("t0150InBlock", "accno", 0, this.account_number);
-            t0150.SetFieldData("t0150InBlock", "cts_medosu", 0, "1");
-            //
-            t0150.Request(false);
 
         }
     }

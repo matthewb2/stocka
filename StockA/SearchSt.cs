@@ -21,6 +21,7 @@ namespace StockA
         public bool is_data_received;
         public string keyVal;
         public string id;
+        public string st_num;
         public int km;
         public RichTextBox output;
         public ListView bucket;
@@ -193,7 +194,7 @@ namespace StockA
                    );
 
 
-            if (!File.Exists(path + @"\0000.json"))
+            if (!File.Exists(path + @"\" + this.st_num + ".json"))
             {
                 using (FileStream fs = File.Create(path + @"\0000.json"))
                 {
@@ -201,7 +202,7 @@ namespace StockA
                     fs.Write(info, 0, info.Length);
                 }
             }
-            else File.WriteAllText(path + @"\0000.json", sonSpec.ToString());
+            else File.WriteAllText(path + @"\"+this.st_num+".json", sonSpec.ToString());
 
             //미체결 종목 리스트 갱신
 
@@ -217,6 +218,8 @@ namespace StockA
 
         public void request(string st_num)
         {
+            this.st_num = st_num;
+
             t1857.SetFieldData("t1857InBlock", "sRealFlag", 0, "0"); //실시간 조회는 실계좌일 때만 가능
             t1857.SetFieldData("t1857InBlock", "sSearchFlag", 0, "S");
             t1857.SetFieldData("t1857InBlock", "query_index", 0, this.id + st_num);
